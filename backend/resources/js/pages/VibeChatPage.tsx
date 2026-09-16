@@ -299,13 +299,18 @@ export const VibeChatPage: React.FC = () => {
                     <div className="mb-3 space-y-1.5 border-b border-amber-100 pb-2.5">
                       {msg.actions_executed.map((action, aIdx) => {
                         const isDelete = action.type === 'delete_ingredient' || action.type === 'delete_recipe';
+                        const isDedupe = action.type === 'deduplicate_ingredient';
                         const isNotFound = action.status === 'not_found';
-                        const colorClass = isDelete
+                        const colorClass = isDedupe
+                          ? action.status === 'deduplicated'
+                            ? 'bg-rose-50 border-rose-200 text-rose-800'
+                            : 'bg-amber-50 border-amber-200 text-amber-800'
+                          : isDelete
                           ? isNotFound
                             ? 'bg-amber-50 border-amber-200 text-amber-800'
                             : 'bg-rose-50 border-rose-200 text-rose-800'
                           : 'bg-emerald-50 border-emerald-200 text-emerald-800';
-                        const iconClass = isDelete
+                        const iconClass = isDedupe || isDelete
                           ? isNotFound ? 'text-amber-500' : 'text-rose-500'
                           : 'text-emerald-600';
 
@@ -344,6 +349,16 @@ export const VibeChatPage: React.FC = () => {
                                   {action.status === 'deleted'
                                     ? <>Receita excluída: <strong>{action.name}</strong></>
                                     : <>Receita não encontrada: <strong>{action.name}</strong></>
+                                  }
+                                </>
+                              )}
+                              {action.type === 'deduplicate_ingredient' && (
+                                <>
+                                  {action.status === 'deduplicated'
+                                    ? <>Duplicatas removidas: <strong>{action.name}</strong> — {action.deleted} excluído(s), 1 mantido</>
+                                    : action.status === 'no_duplicates'
+                                    ? <>Sem duplicatas: <strong>{action.name}</strong></>
+                                    : <>Ingrediente não encontrado: <strong>{action.name}</strong></>
                                   }
                                 </>
                               )}

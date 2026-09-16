@@ -49,6 +49,16 @@ class OpenAiProvider implements AiProviderInterface
         return (bool) preg_match('/(^o1|^o3|^o4|deepseek-r1)/i', $model);
     }
 
+    /**
+     * Returns true for models that do not accept a custom temperature value.
+     * This includes reasoning models and some newer OpenAI models (gpt-5.x, etc).
+     */
+    protected function supportsTemperature(string $model): bool
+    {
+        // Models known NOT to support custom temperature
+        return !preg_match('/(^o1|^o3|^o4|gpt-5|deepseek-r1)/i', $model);
+    }
+
     protected function buildPayload(string $systemPrompt, array $messages, array $tools = []): array
     {
         $formattedMessages = [
@@ -96,7 +106,9 @@ class OpenAiProvider implements AiProviderInterface
                 $payload['reasoning_effort'] = 'none';
             }
         } else {
-            $payload['temperature'] = 0.4;
+            if ($this->supportsTemperature($this->model)) {
+                $payload['temperature'] = 0.4;
+            }
             if (!empty($tools)) {
                 $payload['tools'] = $this->formatToolsForOpenAi($tools);
                 $payload['tool_choice'] = 'auto';
@@ -117,9 +129,18 @@ class OpenAiProvider implements AiProviderInterface
         try {
             $response = $this->getClient()->chat()->create($payload);
         } catch (Throwable $e) {
+            $msg = $e->getMessage();
+            // Retry without temperature if the model doesn't support it
+            if (isset($payload['temperature']) && str_contains($msg, 'temperature')) {
+                unset($payload['temperature']);
+                try {
+                    $response = $this->getClient()->chat()->create($payload);
+                } catch (Throwable $e2) {
+                    throw new RuntimeException('Erro na comunicação com a API de IA: ' . $e2->getMessage(), 0, $e2);
+                }
             // If the provider fails due to tools/parameters with reasoning models, fallback without tools
-            if (!empty($payload['tools'])) {
-                Log::warning('OpenAI tool call failed, retrying without tools', ['error' => $e->getMessage()]);
+            } elseif (!empty($payload['tools'])) {
+                Log::warning('OpenAI tool call failed, retrying without tools', ['error' => $msg]);
                 unset($payload['tools'], $payload['tool_choice'], $payload['reasoning_effort']);
                 try {
                     $response = $this->getClient()->chat()->create($payload);
@@ -127,7 +148,7 @@ class OpenAiProvider implements AiProviderInterface
                     throw new RuntimeException('Erro na comunicação com a API de IA: ' . $e2->getMessage(), 0, $e2);
                 }
             } else {
-                throw new RuntimeException('Erro na comunicação com a API de IA: ' . $e->getMessage(), 0, $e);
+                throw new RuntimeException('Erro na comunicação com a API de IA: ' . $msg, 0, $e);
             }
         }
 
@@ -235,7 +256,35 @@ class OpenAiProvider implements AiProviderInterface
                 }
             }
         } catch (Throwable $e) {
-            Log::warning('Erro no stream OpenAI, tentando fallback...', ['error' => $e->getMessage()]);
+            $msg = $e->getMessage();
+
+            // Retry without temperature if the model doesn't support it
+            if (!$yieldedAnyText && isset($payload['temperature']) && str_contains($msg, 'temperature')) {
+                unset($payload['temperature']);
+                try {
+                    $stream = $this->getClient()->chat()->createStreamed($payload);
+                    foreach ($stream as $response) {
+                        $choice = $response->choices[0] ?? null;
+                        if ($choice && !empty($choice->delta->content)) {
+                            yield ['type' => 'text', 'content' => $choice->delta->content];
+                        }
+                        if (isset($response->usage) && $response->usage) {
+                            yield [
+                                'type' => 'usage',
+                                'prompt_tokens' => $response->usage->promptTokens ?? 0,
+                                'completion_tokens' => $response->usage->completionTokens ?? 0,
+                                'total_tokens' => $response->usage->totalTokens ?? 0,
+                            ];
+                        }
+                    }
+                    return;
+                } catch (Throwable $e2) {
+                    yield ['type' => 'error', 'message' => $e2->getMessage()];
+                    return;
+                }
+            }
+
+            Log::warning('Erro no stream OpenAI, tentando fallback...', ['error' => $msg]);
 
             // If we failed before yielding any text and tools were present, retry without tools
             if (!$yieldedAnyText && !empty($payload['tools'])) {

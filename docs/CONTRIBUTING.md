@@ -30,8 +30,8 @@ Obrigado pelo interesse em contribuir com o **Conta na Massa**! Este é um proje
    # Backend
    cd backend && php artisan test
    
-   # Frontend
-   cd frontend && npm run build
+   # Frontend (React 19 + TypeScript)
+   cd backend && npm run build
    ```
 6. Abra o PR com uma descrição detalhada das mudanças.
 

@@ -15,12 +15,11 @@ import {
   Truck,
   Layers,
 } from 'lucide-react';
-import type { Recipe } from '../types';
 
 export const RecipeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { currentRecipe: recipe, fetchRecipe, isLoading, error } = useRecipeStore();
+  const { currentRecipe: recipe, fetchRecipe, isLoading } = useRecipeStore();
   const [multiplier, setMultiplier] = useState<number>(1);
 
   useEffect(() => {

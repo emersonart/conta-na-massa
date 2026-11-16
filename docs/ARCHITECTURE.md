@@ -6,11 +6,14 @@
 
 ## 1. Visão Geral da Arquitetura
 
-O **Conta na Massa** é construído como uma aplicação desacoplada com Backend API RESTful e Frontend Single Page Application (SPA).
+O **Conta na Massa** é construído como uma aplicação desacoplada no padrão **Single-Origin Monolith**: o Frontend Single Page Application (SPA) em React 19 está integrado dentro do repositório em `backend/resources/js`, sendo empacotado pelo Vite e servido diretamente pelo Laravel via rota catch-all no Blade (`welcome.blade.php`).
+
+Isso elimina complexidades de CORS em produção, dispensa proxy reverso adicional e unifica a autenticação por cookies/sessão e tokens Sanctum na mesma porta (8000).
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Frontend (React 19 + Vite)               │
+│   - Local: backend/resources/js/                            │
 │   - UI/UX: Design Gastronômico (#E85D04 / #2D6A4F / Trigo)  │
 │   - Estado: Zustand (AuthStore, RecipeStore, ChatStore)     │
 │   - Tipografia Tabular: Inter / Poppins                     │
@@ -19,6 +22,8 @@ O **Conta na Massa** é construído como uma aplicação desacoplada com Backend
                                │ JSON / REST via Sanctum Cookies / Bearer
 ┌──────────────────────────────▼──────────────────────────────┐
 │                    Backend (Laravel 13 API)                 │
+│   - Servidor HTTP: Apache / PHP 8.3 na porta 8000           │
+│   - SPA Host: welcome.blade.php com @viteReactRefresh       │
 │   - Auth: Laravel Sanctum com Rate Limiting                 │
 │   - Controllers: RESTful com FormRequests e API Resources   │
 │   - Services:                                               │
@@ -55,6 +60,11 @@ O **Conta na Massa** é construído como uma aplicação desacoplada com Backend
 - **Contexto**: Evitar erros de arredondamento em conversões culinárias (ex: 250g de trigo de um pacote de 1kg a R$ 6,00).
 - **Decisão**: Banco armazena sempre na menor unidade comum (`g` para peso, `ml` para líquidos, `un` para contagem).
 - **Consequência**: Cálculos matemáticos precisos no backend (`cost_per_unit_brl`), interface visual convertendo dinamicamente para kg ou L quando `quantidade >= 1000`.
+
+### ADR 04: Frontend SPA Integrado ao Laravel via Vite (Single-Origin)
+- **Contexto**: Manter frontend e backend desacoplados em código, mas fáceis de implantar e gerenciar sem duplicar portas públicas, proxies reversos (Nginx adicionais) ou lidar com problemas de CORS em desenvolvimento/produção.
+- **Decisão**: Hospedar a SPA React 19 em `backend/resources/js`, orquestrada pelo plugin oficial `@laravel/vite-plugin`. A rota web padrão do Laravel (`/{any}`) serve a casca Blade (`welcome.blade.php`), e o Vite gerencia os assets compilados em `public/build/`.
+- **Consequência**: Build unificado no Docker (`APP_BUILD_ASSETS=true`), ambiente local ágil com HMR instantâneo (`npm run dev`) e comunicação direta com `/api/v1` sob a mesma origem.
 
 ---
 

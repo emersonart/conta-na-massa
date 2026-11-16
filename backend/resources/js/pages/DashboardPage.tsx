@@ -14,6 +14,7 @@ import {
   PieChart,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '../api/client';
 import type { Recipe } from '../types';
 
 export const DashboardPage: React.FC = () => {
@@ -24,7 +25,6 @@ export const DashboardPage: React.FC = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const { apiClient } = await import('../api/client');
         const response = await apiClient.get('/dashboard/summary');
         setSummary(response.data);
       } catch (e) {
@@ -218,7 +218,7 @@ export const DashboardPage: React.FC = () => {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {recipes.slice(0, 6).map((recipe) => {
+            {recipes.slice(0, 6).map((recipe: Recipe) => {
               const fin = recipe.financials;
               const profitMargin = fin?.profit_margin_pct ?? settings.profit_margin_pct;
               const sellingPrice = fin?.suggested_selling_price_brl ?? 0;

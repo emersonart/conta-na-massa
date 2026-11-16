@@ -24,7 +24,6 @@ export const VibeChatPage: React.FC = () => {
     sessions,
     sessionId,
     userProfile,
-    activeProvider,
     isSendingMessage,
     sendMessage,
     fetchHistory,

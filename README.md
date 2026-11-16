@@ -100,6 +100,29 @@ Desenvolvido especialmente para ser utilizado com facilidade no ambiente de cozi
 
 ---
 
+## 📂 Estrutura do Projeto
+
+O **Conta na Massa** é construído como um monólito integrado moderno (*Single-Origin*). O frontend SPA (React 19 + TypeScript + Vite + Tailwind CSS v4) está hospedado diretamente dentro de `backend/resources/js`, sendo servido de forma unificada pelo Laravel através do Vite:
+
+```text
+conta-na-massa/
+├── backend/
+│   ├── app/                 # Models, Controllers, Services e IA Guardrails
+│   ├── resources/
+│   │   ├── js/              # Frontend SPA (React 19, TypeScript, Zustand, Tailwind v4)
+│   │   │   ├── api/         # Cliente Axios e interceptors
+│   │   │   ├── components/  # Componentes reutilizáveis (UI e Layout)
+│   │   │   ├── pages/       # Páginas (Dashboard, Despensa, Receitas, Modo Vibe)
+│   │   │   └── stores/      # Gerenciamento de estado global com Zustand
+│   │   └── views/           # Blade host da SPA (welcome.blade.php)
+│   ├── routes/              # Rotas web (catch-all SPA) e API RESTful (/api/v1)
+│   └── vite.config.ts       # Configuração do Vite com plugin Laravel e React
+├── docker/                  # Configurações de contêineres Docker
+└── docs/                    # Documentação detalhada (Arquitetura, API, Segurança)
+```
+
+---
+
 ## 🚀 Instalação e Execução
 
 ### Opção 1: Via Docker Compose (Recomendado)
@@ -112,7 +135,7 @@ cd conta-na-massa
 # 2. Configure o ambiente
 cp backend/.env.example backend/.env
 
-# 3. Suba todos os contêineres (PostgreSQL 16 + Laravel 13 + React 19 + Mailpit)
+# 3. Suba todos os contêineres (PostgreSQL 16 + Laravel 13 & React 19 + Mailpit)
 docker compose up -d
 
 # 4. Execute as migrações
@@ -120,8 +143,7 @@ docker compose exec backend php artisan migrate
 ```
 
 Acesse:
-- **Frontend**: `http://localhost:3000`
-- **Backend API**: `http://localhost:8000/api/v1`
+- **Aplicação Completa (Frontend SPA & API)**: `http://localhost:8000`
 - **Mailpit (Emails locais)**: `http://localhost:8025`
 
 ---
@@ -134,19 +156,25 @@ Acesse:
 - Node.js 22+ e npm
 
 ```bash
-# ─── Backend (Laravel 13) ───
 cd backend
+
+# Instale as dependências PHP e Node.js
 composer install
+npm install
+
+# Configure o ambiente e banco de dados
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
+
+# Em um terminal (API Laravel):
 php artisan serve
 
-# ─── Frontend (React 19) ───
-cd ../frontend
-npm install
+# Em outro terminal (Vite Dev Server com HMR para React 19):
 npm run dev
 ```
+
+Acesse a aplicação em `http://localhost:8000`.
 
 ---
 
@@ -159,8 +187,8 @@ O projeto possui suíte completa de testes automatizados:
 cd backend
 php artisan test
 
-# Build e verificação de tipagem do frontend
-cd ../frontend
+# Build e verificação de tipagem do frontend (React 19 + TypeScript)
+cd backend
 npm run build
 ```
 

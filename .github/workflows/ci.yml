@@ -4,23 +4,16 @@ on:
   push:
     branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   backend-tests:
     name: Backend Tests (PHP 8.3 & Laravel 13)
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: conta_na_massa_test
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout Code
@@ -30,8 +23,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, dom, fileinfo, pdo, pdo_pgsql, pgsql
+          extensions: mbstring, dom, fileinfo, pdo, pdo_sqlite, sqlite3, pdo_pgsql, pgsql
           coverage: none
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       - name: Install Composer Dependencies
         working-directory: ./backend
@@ -62,11 +63,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
 
       - name: Install Dependencies
-        working-directory: ./frontend
+        working-directory: ./backend
         run: npm ci
 
       - name: TypeScript Check & Build
-        working-directory: ./frontend
+        working-directory: ./backend
         run: npm run build

@@ -34,7 +34,7 @@ WORKDIR /var/www/html
 COPY backend/ .
 
 # Instalar dependências PHP no build-time (vendor fica na imagem, não no bind mount)
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts 2>/dev/null || true
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
 # Pré-instalar node_modules na imagem (I/O nativo Linux, sem bind mount overhead)
 # node_modules no named volume do compose mascara o bind mount do host

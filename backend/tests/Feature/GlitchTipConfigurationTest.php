@@ -34,14 +34,10 @@ class GlitchTipConfigurationTest extends TestCase
     }
 
     /**
-     * Test that the Sentry integration class is registered when package is available.
+     * Test that the Sentry integration class is available.
      */
-    public function test_sentry_integration_available_or_gracefully_handled(): void
+    public function test_sentry_integration_class_is_available(): void
     {
-        if (class_exists(\Sentry\Laravel\Integration::class)) {
-            $this->assertTrue(class_exists(\Sentry\Laravel\Integration::class));
-        } else {
-            $this->assertNotNull(config('sentry'));
-        }
+        $this->assertTrue(class_exists(\Sentry\Laravel\Integration::class));
     }
 }

@@ -18,9 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Pure Bearer Token REST API (Sanctum)
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        if (class_exists(Integration::class)) {
-            Integration::handles($exceptions);
-        }
+        Integration::handles($exceptions);
 
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),

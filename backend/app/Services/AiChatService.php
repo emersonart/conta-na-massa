@@ -104,8 +104,7 @@ class AiChatService
     private function executeToolCallsStream(
         User $user,
         string $sessionId,
-        array $toolCalls,
-        \Generator &$yieldTarget // we yield into the outer generator via a closure trick
+        array $toolCalls
     ): array {
         // NOTE: PHP generators can't yield from helper methods directly.
         // We return data and let the caller yield — see usage in handleUserMessageStream.
@@ -242,7 +241,7 @@ class AiChatService
             $lastFingerprint = $fingerprint;
 
             // Execute tool calls and collect results
-            $batch = $this->executeToolCallsStream($user, $sessionId, $pendingToolCalls, $dummy);
+            $batch = $this->executeToolCallsStream($user, $sessionId, $pendingToolCalls);
 
             foreach ($batch['results'] as $r) {
                 if ($r['action']) {

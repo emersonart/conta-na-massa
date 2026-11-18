@@ -7,7 +7,6 @@ import { Badge } from '../components/ui/Badge';
 import {
   Send,
   Trash2,
-  Brain,
   User as UserIcon,
   AlertTriangle,
   Lightbulb,
@@ -24,7 +23,6 @@ export const VibeChatPage: React.FC = () => {
     messages,
     sessions,
     sessionId,
-    userProfile,
     isSendingMessage,
     sendMessage,
     fetchHistory,
@@ -36,7 +34,6 @@ export const VibeChatPage: React.FC = () => {
   } = useAiStore();
 
   const [inputMessage, setInputMessage] = useState('');
-  const [showProfileDrawer, setShowProfileDrawer] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -180,16 +177,6 @@ export const VibeChatPage: React.FC = () => {
 
           <div className="flex items-center gap-1.5 shrink-0">
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowProfileDrawer(!showProfileDrawer)}
-              leftIcon={<Brain className="w-3.5 h-3.5 text-[#E85D04]" />}
-              className="px-2.5"
-            >
-              <span className="hidden sm:inline">Preferências</span>
-            </Button>
-
-            <Button
               variant="ghost"
               size="sm"
               onClick={() => clearHistory()}
@@ -199,39 +186,6 @@ export const VibeChatPage: React.FC = () => {
             />
           </div>
         </div>
-
-        {/* Preferences Popover */}
-        {showProfileDrawer && (
-          <div className="m-3 p-4 rounded-xl bg-amber-50/90 border border-amber-200 text-xs sm:text-sm text-amber-950 space-y-2 animate-fadeIn shrink-0">
-            <div className="flex items-center justify-between font-bold font-heading">
-              <span className="flex items-center gap-1.5">
-                <Brain className="w-4 h-4 text-[#E85D04]" /> Preferências da Cozinha
-              </span>
-              <button
-                onClick={() => setShowProfileDrawer(false)}
-                className="text-amber-800 hover:text-black p-1"
-              >
-                ✕
-              </button>
-            </div>
-            <p className="text-slate-700">
-              {userProfile?.summary ||
-                'O assistente memoriza particularidades das suas receitas e produtos conforme as conversas avançam.'}
-            </p>
-            {userProfile?.preferences && (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {Object.entries(userProfile.preferences).map(([key, val]) => (
-                  <span
-                    key={key}
-                    className="px-2 py-0.5 rounded-md bg-white border border-amber-200 text-[11px] font-medium text-amber-900"
-                  >
-                    {key}: {typeof val === 'object' ? JSON.stringify(val) : String(val)}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Messages Scroll Area */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">

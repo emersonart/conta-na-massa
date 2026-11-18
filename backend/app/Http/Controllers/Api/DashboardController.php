@@ -23,7 +23,7 @@ class DashboardController extends Controller
         // 2. Recipes (Total and Latest 6)
         $totalRecipes = Recipe::where('user_id', $user->id)->count();
         $recentRecipes = Recipe::where('user_id', $user->id)
-            ->with(['ingredients'])
+            ->with(['items.ingredient'])
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get();

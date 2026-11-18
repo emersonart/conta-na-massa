@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\ConfirmEmailChangeNotification;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -124,42 +125,56 @@ class AccountController extends Controller
         ]);
 
         $tokenHash = hash('sha256', $validated['token']);
-        $result = DB::transaction(function () use ($tokenHash): string {
-            $lockedUser = User::query()
+        try {
+            $result = DB::transaction(function () use ($tokenHash): string {
+                $lockedUser = User::query()
+                    ->where('email_change_token_hash', $tokenHash)
+                    ->where('email_change_expires_at', '>', now())
+                    ->lockForUpdate()
+                    ->first();
+
+                if (! $lockedUser || ! $lockedUser->pending_email) {
+                    return 'invalid';
+                }
+
+                $emailTaken = User::query()
+                    ->where('email', $lockedUser->pending_email)
+                    ->where('id', '!=', $lockedUser->id)
+                    ->exists();
+
+                if ($emailTaken) {
+                    $lockedUser->forceFill([
+                        'pending_email' => null,
+                        'email_change_token_hash' => null,
+                        'email_change_expires_at' => null,
+                    ])->save();
+
+                    return 'email_taken';
+                }
+
+                $lockedUser->email = $lockedUser->pending_email;
+                $lockedUser->email_verified_at = now();
+                $lockedUser->pending_email = null;
+                $lockedUser->email_change_token_hash = null;
+                $lockedUser->email_change_expires_at = null;
+                $lockedUser->save();
+                $lockedUser->tokens()->delete();
+
+                return 'confirmed';
+            });
+        } catch (UniqueConstraintViolationException $exception) {
+            // The unique email index remains the final arbiter if another account
+            // claims the address between our availability check and the update.
+            User::query()
                 ->where('email_change_token_hash', $tokenHash)
-                ->where('email_change_expires_at', '>', now())
-                ->lockForUpdate()
-                ->first();
-
-            if (! $lockedUser || ! $lockedUser->pending_email) {
-                return 'invalid';
-            }
-
-            $emailTaken = User::query()
-                ->where('email', $lockedUser->pending_email)
-                ->where('id', '!=', $lockedUser->id)
-                ->exists();
-
-            if ($emailTaken) {
-                $lockedUser->forceFill([
+                ->update([
                     'pending_email' => null,
                     'email_change_token_hash' => null,
                     'email_change_expires_at' => null,
-                ])->save();
+                ]);
 
-                return 'email_taken';
-            }
-
-            $lockedUser->email = $lockedUser->pending_email;
-            $lockedUser->email_verified_at = now();
-            $lockedUser->pending_email = null;
-            $lockedUser->email_change_token_hash = null;
-            $lockedUser->email_change_expires_at = null;
-            $lockedUser->save();
-            $lockedUser->tokens()->delete();
-
-            return 'confirmed';
-        });
+            $result = 'email_taken';
+        }
 
         if ($result === 'invalid') {
             return response()->json([

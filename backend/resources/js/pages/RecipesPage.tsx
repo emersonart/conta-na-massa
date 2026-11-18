@@ -4,21 +4,19 @@ import { useIngredientStore } from '../stores/ingredientStore';
 import { useCostStore } from '../stores/costStore';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { Card } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
 import { Badge } from '../components/ui/Badge';
-import { CostBreakdownChart } from '../components/ui/CostBreakdownChart';
 import {
   BookOpen,
   Plus,
   Trash2,
   Edit2,
   Clock,
-  ChevronRight,
   PlusCircle,
   X,
   Search,
   AlertCircle,
+  ChevronRight,
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { Recipe } from '../types';
@@ -170,7 +168,6 @@ export const RecipesPage: React.FC = () => {
     }
   };
 
-  // Real-time cost preview for the modal
   const previewIngredientsCost = items.reduce((sum, it) => {
     const ing = ingredients.find((i) => i.id === it.ingredient_id);
     const qty = parseFloat(it.quantity) || 0;
@@ -186,160 +183,167 @@ export const RecipesPage: React.FC = () => {
   const previewSellingPrice = previewTotalCost * (1 + settings.profit_margin_pct / 100);
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold font-heading text-[#212529] tracking-tight flex items-center gap-2">
-            <BookOpen className="w-6 h-6 text-[#E85D04]" /> Catálogo de Receitas
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Fichas técnicas completas com custos de insumos, mão de obra e preço de venda por porção.
-          </p>
+    <div className="space-y-5 animate-fadeIn">
+      {/* Top Filter & Action Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Buscar receita pelo nome..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-10 rounded-xl border border-[#E5DDD0] bg-white pl-9 pr-3 text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-1 focus:ring-[#E85D04]/20 shadow-2xs"
+          />
         </div>
 
-        <Button variant="primary" size="md" onClick={handleOpenCreate} leftIcon={<Plus className="w-4 h-4" />}>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={handleOpenCreate}
+          leftIcon={<Plus className="w-4 h-4" />}
+          className="shrink-0"
+        >
           Nova Receita
         </Button>
       </div>
 
-      {/* Search Filter */}
-      <div className="relative max-w-md">
-        <div className="absolute left-3.5 top-3.5 pointer-events-none text-slate-400">
-          <Search className="w-4 h-4" />
-        </div>
-        <input
-          type="text"
-          placeholder="Buscar receita pelo nome..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full min-h-[44px] rounded-xl border border-[#E5DDD0] bg-white pl-10 pr-4 py-2 text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-2 focus:ring-[#E85D04]/15 shadow-2xs"
-        />
+      {/* Main Table Surface (Zero cards inside cards) */}
+      <div className="bg-white rounded-2xl border border-[#E5DDD0] shadow-soft overflow-hidden">
+        {recipes.length === 0 ? (
+          <div className="text-center py-16 px-4 space-y-3">
+            <div className="w-12 h-12 rounded-xl bg-orange-50 text-[#E85D04] flex items-center justify-center mx-auto">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <div className="max-w-sm mx-auto">
+              <h3 className="font-bold text-[#212529] font-heading">
+                {searchTerm ? 'Nenhuma receita encontrada' : 'Nenhuma receita cadastrada'}
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                {searchTerm
+                  ? `Nenhum resultado para "${searchTerm}".`
+                  : 'Cadastre sua primeira receita para apurar custos e margens de venda.'}
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleOpenCreate}
+              leftIcon={<Plus className="w-4 h-4" />}
+              className="mt-2"
+            >
+              Criar Primeira Receita
+            </Button>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                  <th className="py-3.5 px-5">Receita</th>
+                  <th className="py-3.5 px-4">Rendimento & Tempo</th>
+                  <th className="py-3.5 px-4 text-right">Custo de Produção</th>
+                  <th className="py-3.5 px-4 text-right">Preço Sugerido</th>
+                  <th className="py-3.5 px-4 text-right">Preço / Porção</th>
+                  <th className="py-3.5 px-4 text-center">Margem</th>
+                  <th className="py-3.5 px-5 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E5DDD0]/60">
+                {recipes.map((recipe) => {
+                  const fin = recipe.financials;
+                  const profitMargin =
+                    fin?.profit_margin_pct ?? settings.profit_margin_pct;
+                  const sellingPrice = fin?.suggested_selling_price_brl ?? 0;
+                  const costPrice = fin?.total_cost_brl ?? 0;
+                  const portionPrice = fin?.price_per_portion_brl ?? 0;
+
+                  return (
+                    <tr
+                      key={recipe.id}
+                      onClick={() => navigate(`/recipes/${recipe.id}`)}
+                      className="hover:bg-[#FDFBF7]/60 transition-colors cursor-pointer group"
+                    >
+                      <td className="py-3.5 px-5">
+                        <span className="font-bold text-[#212529] group-hover:text-[#E85D04] transition-colors block">
+                          {recipe.name}
+                        </span>
+                        {recipe.description && (
+                          <span className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                            {recipe.description}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600 text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-slate-800">
+                            {recipe.yield_quantity} {recipe.yield_unit}
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1 text-slate-500">
+                            <Clock className="w-3.5 h-3.5" />
+                            {recipe.prep_time_minutes} min
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 text-right tabular-nums text-slate-700 font-medium">
+                        R$ {costPrice.toFixed(2)}
+                      </td>
+                      <td className="py-3.5 px-4 text-right tabular-nums">
+                        <span className="font-extrabold text-[#E85D04] text-base font-heading">
+                          R$ {sellingPrice.toFixed(2)}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right tabular-nums text-slate-600 font-medium text-xs">
+                        R$ {portionPrice.toFixed(2)} /{recipe.yield_unit.replace(/s$/, '')}
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <Badge variant="sage" size="sm">
+                          +{profitMargin.toFixed(0)}%
+                        </Badge>
+                      </td>
+                      <td className="py-3.5 px-5 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={(e) => handleOpenEdit(recipe, e)}
+                            title="Editar receita"
+                            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={(e) => handleDelete(recipe.id, recipe.name, e)}
+                            title="Excluir receita"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          <span
+                            onClick={() => navigate(`/recipes/${recipe.id}`)}
+                            className="inline-flex items-center gap-0.5 text-xs font-semibold text-[#E85D04] pl-2 hover:underline cursor-pointer"
+                          >
+                            Ver <ChevronRight className="w-3.5 h-3.5" />
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      {/* Recipe Cards Grid */}
-      {recipes.length === 0 ? (
-        <Card className="text-center py-12 border-dashed border-2 border-[#E5DDD0]">
-          <div className="w-12 h-12 rounded-xl bg-orange-100 text-[#E85D04] flex items-center justify-center mx-auto">
-            <BookOpen className="w-6 h-6" />
-          </div>
-          <h4 className="font-bold text-[#212529] font-heading mt-3">Nenhuma receita encontrada</h4>
-          <p className="text-xs text-slate-500 max-w-xs mx-auto mt-1">
-            {searchTerm
-              ? `Nenhum resultado para "${searchTerm}".`
-              : 'Cadastre sua primeira receita ou use o Assistente para estruturar a ficha técnica.'}
-          </p>
-          <Button variant="primary" size="sm" onClick={handleOpenCreate} className="mt-4" leftIcon={<Plus className="w-4 h-4" />}>
-            Criar Minha Primeira Receita
-          </Button>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recipes.map((recipe) => {
-            const fin = recipe.financials;
-            const profitMargin = fin?.profit_margin_pct ?? settings.profit_margin_pct;
-            const sellingPrice = fin?.suggested_selling_price_brl ?? 0;
-            const costPrice = fin?.total_cost_brl ?? 0;
-            const portionPrice = fin?.price_per_portion_brl ?? 0;
-
-            return (
-              <Card
-                key={recipe.id}
-                hoverable
-                onClick={() => navigate(`/recipes/${recipe.id}`)}
-                className="flex flex-col justify-between group space-y-4"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <h4 className="font-bold text-lg text-[#212529] font-heading group-hover:text-[#E85D04] transition-colors leading-snug">
-                      {recipe.name}
-                    </h4>
-                    <Badge variant="sage" size="md">
-                      +{profitMargin.toFixed(0)}%
-                    </Badge>
-                  </div>
-
-                  {recipe.description && (
-                    <p className="text-xs text-slate-500 line-clamp-2">{recipe.description}</p>
-                  )}
-
-                  <div className="flex items-center gap-3 text-xs text-slate-500 tabular-nums">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-slate-400" /> {recipe.prep_time_minutes} min
-                    </span>
-                    <span>•</span>
-                    <span>
-                      Rende {recipe.yield_quantity} {recipe.yield_unit}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Financial Summary & Breakdown Bar */}
-                <div className="pt-3 border-t border-[#E5DDD0]/70 space-y-3">
-                  {fin && <CostBreakdownChart financials={fin} compact />}
-
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#FDFBF7] border border-[#E5DDD0]/60">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                        Custo ({recipe.yield_quantity} {recipe.yield_unit})
-                      </span>
-                      <p className="text-sm font-semibold text-slate-700 tabular-nums">
-                        R$ {costPrice.toFixed(2)}
-                      </p>
-                    </div>
-
-                    <div className="text-right">
-                      <span className="text-[10px] uppercase font-bold text-[#E85D04] tracking-wider">
-                        Venda Total
-                      </span>
-                      <p className="text-lg font-black text-[#E85D04] tabular-nums font-heading">
-                        R$ {sellingPrice.toFixed(2)}
-                      </p>
-                      <span className="text-[11px] font-medium text-slate-500 tabular-nums">
-                        (R$ {portionPrice.toFixed(2)} / {recipe.yield_unit.replace(/s$/, '')})
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Actions & Detail CTA */}
-                  <div className="flex items-center justify-between pt-1">
-                    <div className="flex gap-1">
-                      <button
-                        onClick={(e) => handleOpenEdit(recipe, e)}
-                        className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
-                        title="Editar Receita"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={(e) => handleDelete(recipe.id, recipe.name, e)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                        title="Excluir Receita"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <span className="text-xs font-bold text-[#E85D04] flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
-                      Ver Ficha Técnica <ChevronRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Create / Edit Recipe Modal */}
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingId ? 'Editar Ficha Técnica' : 'Nova Receita & Ficha Técnica'}
-        subtitle="Informe o rendimento e os ingredientes com suas quantidades"
+        subtitle="Informe rendimento, tempo e insumos para compor o custo"
         maxWidth="lg"
       >
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {formError && (
             <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
@@ -349,14 +353,14 @@ export const RecipesPage: React.FC = () => {
 
           <Input
             label="Nome da Receita"
-            placeholder="Ex: Bolo Vulcão de Ninho, Pão Italiano de Fermentação Natural..."
+            placeholder="Ex: Bolo de Cenoura com Chocolate, Pão Artesanal..."
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
             autoFocus
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input
               label="Rendimento (Qtd)"
               type="number"
@@ -383,7 +387,7 @@ export const RecipesPage: React.FC = () => {
               inputMode="numeric"
               value={prepTimeMinutes}
               onChange={(e) => setPrepTimeMinutes(e.target.value)}
-              helperText="Usado para calcular a mão de obra"
+              helperText="Calcula custo de mão de obra"
             />
           </div>
 
@@ -395,10 +399,10 @@ export const RecipesPage: React.FC = () => {
           />
 
           {/* Dynamic Ingredients Section */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-2 pt-2">
             <div className="flex items-center justify-between">
               <label className="text-sm font-bold font-heading text-[#212529]">
-                Ingredientes Utilizados
+                Insumos Utilizados
               </label>
               <Button
                 type="button"
@@ -407,16 +411,16 @@ export const RecipesPage: React.FC = () => {
                 onClick={handleAddItem}
                 leftIcon={<PlusCircle className="w-3.5 h-3.5 text-[#E85D04]" />}
               >
-                Adicionar Linha
+                Adicionar Insumo
               </Button>
             </div>
 
             {ingredients.length === 0 ? (
               <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-                Você ainda não tem ingredientes cadastrados na despensa. Cadastre ingredientes primeiro na aba Despensa.
+                Você ainda não tem ingredientes cadastrados. Cadastre insumos primeiro na despensa.
               </div>
             ) : (
-              <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                 {items.map((item, index) => {
                   const selectedIng = ingredients.find((i) => i.id === item.ingredient_id);
                   const itemUnit = selectedIng?.unit || 'g';
@@ -426,15 +430,14 @@ export const RecipesPage: React.FC = () => {
                   return (
                     <div
                       key={index}
-                      className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FDFBF7] border border-[#E5DDD0]"
+                      className="flex items-center gap-2 p-2 rounded-xl bg-[#FDFBF7] border border-[#E5DDD0]"
                     >
-                      {/* Ingredient Selector */}
                       <select
                         value={item.ingredient_id}
                         onChange={(e) => handleItemChange(index, 'ingredient_id', e.target.value)}
-                        className="flex-1 min-h-[42px] rounded-lg border border-[#E5DDD0] bg-white px-2.5 py-1.5 text-xs sm:text-sm text-[#212529] focus:border-[#E85D04] focus:outline-none cursor-pointer"
+                        className="flex-1 min-h-[40px] rounded-lg border border-[#E5DDD0] bg-white px-2.5 py-1 text-xs sm:text-sm text-[#212529] focus:border-[#E85D04] focus:outline-none cursor-pointer"
                       >
-                        <option value="">Selecione o ingrediente...</option>
+                        <option value="">Selecione o insumo...</option>
                         {ingredients.map((ing) => (
                           <option key={ing.id} value={ing.id}>
                             {ing.name} ({ing.unit}) — R$ {ing.cost_per_unit_brl < 0.01 ? ing.cost_per_unit_brl.toFixed(4) : ing.cost_per_unit_brl.toFixed(2)}/{ing.unit}
@@ -442,8 +445,7 @@ export const RecipesPage: React.FC = () => {
                         ))}
                       </select>
 
-                      {/* Quantity */}
-                      <div className="w-28 sm:w-32 relative">
+                      <div className="w-28 relative">
                         <input
                           type="number"
                           step="any"
@@ -451,24 +453,22 @@ export const RecipesPage: React.FC = () => {
                           inputMode="decimal"
                           value={item.quantity}
                           onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                          className="w-full min-h-[42px] rounded-lg border border-[#E5DDD0] bg-white px-2.5 py-1.5 pr-8 text-xs sm:text-sm text-[#212529] focus:border-[#E85D04] focus:outline-none tabular-nums"
+                          className="w-full min-h-[40px] rounded-lg border border-[#E5DDD0] bg-white px-2.5 py-1 pr-8 text-xs sm:text-sm text-[#212529] focus:border-[#E85D04] focus:outline-none tabular-nums"
                         />
                         <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 select-none">
                           {itemUnit}
                         </span>
                       </div>
 
-                      {/* Subtotal */}
                       <span className="w-20 text-right text-xs font-bold text-[#2D6A4F] tabular-nums hidden sm:block">
                         R$ {itemCost.toFixed(2)}
                       </span>
 
-                      {/* Remove Button */}
                       {items.length > 1 && (
                         <button
                           type="button"
                           onClick={() => handleRemoveItem(index)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -481,20 +481,20 @@ export const RecipesPage: React.FC = () => {
           </div>
 
           {/* Real-time Calculation Summary in Modal */}
-          <div className="p-4 rounded-xl bg-orange-50/60 border border-orange-200/70 space-y-2">
+          <div className="p-3.5 rounded-xl bg-orange-50/70 border border-orange-200/80 space-y-2">
             <div className="flex items-center justify-between text-xs font-medium text-slate-700">
-              <span>Custo de Insumos: R$ {previewIngredientsCost.toFixed(2)}</span>
+              <span>Insumos: R$ {previewIngredientsCost.toFixed(2)}</span>
               <span>Mão de Obra ({prepTimeMinutes}m): R$ {previewLaborCost.toFixed(2)}</span>
             </div>
             <div className="flex items-center justify-between pt-1 border-t border-orange-200/50">
               <div>
-                <span className="text-[11px] text-slate-500 block">Custo Total c/ Overhead ({settings.overhead_pct}%)</span>
+                <span className="text-[11px] text-slate-500 block">Custo Total ({settings.overhead_pct}% overhead)</span>
                 <span className="text-sm font-bold text-slate-800 tabular-nums">
                   R$ {previewTotalCost.toFixed(2)}
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[11px] text-slate-500 block">Preço Sugerido c/ Lucro ({settings.profit_margin_pct}%)</span>
+                <span className="text-[11px] text-slate-500 block">Preço Sugerido (+{settings.profit_margin_pct}% lucro)</span>
                 <span className="text-lg font-black text-[#E85D04] tabular-nums font-heading">
                   R$ {previewSellingPrice.toFixed(2)}
                 </span>

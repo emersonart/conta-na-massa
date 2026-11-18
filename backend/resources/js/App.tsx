@@ -11,6 +11,9 @@ import { RecipesPage } from './pages/RecipesPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { CostSettingsPage } from './pages/CostSettingsPage';
 import { VibeChatPage } from './pages/VibeChatPage';
+import { AccountPage } from './pages/AccountPage';
+import { PasswordRecoveryPage } from './pages/PasswordRecoveryPage';
+import { ConfirmEmailChangePage } from './pages/ConfirmEmailChangePage';
 
 function AppContent() {
   const { checkAuth, logout, user, token, isCheckingAuth } = useAuthStore();
@@ -54,12 +57,18 @@ function AppContent() {
     return <Navigate to="/login" replace />;
   }
 
-  const isAuthPage = location.pathname === '/login';
+  const isAuthPage = ['/login', '/forgot-password', '/reset-password', '/confirm-email-change'].includes(location.pathname);
 
   if (isAuthPage) {
     return (
       <main className="min-h-screen bg-[#F8F6F0]">
-        <AuthPage />
+        {location.pathname === '/login' ? (
+          <AuthPage />
+        ) : location.pathname === '/confirm-email-change' ? (
+          <ConfirmEmailChangePage />
+        ) : (
+          <PasswordRecoveryPage />
+        )}
       </main>
     );
   }
@@ -81,6 +90,7 @@ function AppContent() {
             <Route path="/recipes/:id" element={<ProtectedRoute><RecipeDetailPage /></ProtectedRoute>} />
             <Route path="/ingredients" element={<ProtectedRoute><IngredientsPage /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><CostSettingsPage /></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
             <Route path="/vibe" element={<ProtectedRoute><VibeChatPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>

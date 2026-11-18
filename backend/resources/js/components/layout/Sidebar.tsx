@@ -8,6 +8,7 @@ import {
   LogOut,
   Plus,
   X,
+  UserRound,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
@@ -147,19 +148,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {/* User Profile & Logout in Footer */}
         <div className="p-3 border-t border-[#E5DDD0]/80 shrink-0 bg-[#FDFBF7]">
           <div className="flex items-center justify-between px-2 py-1.5">
-            <div className="flex items-center gap-2.5 min-w-0">
+            <button
+              type="button"
+              onClick={() => handleNav('/account')}
+              className="flex items-center gap-2.5 min-w-0 text-left rounded-lg hover:bg-orange-50 focus-visible:outline-2 focus-visible:outline-[#E85D04]"
+              aria-label="Abrir minha conta"
+            >
               <div className="w-9 h-9 rounded-xl bg-[#2D6A4F] text-white font-bold text-xs flex items-center justify-center uppercase shrink-0 shadow-2xs">
                 {user?.name?.[0] || 'C'}
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 pr-1">
                 <p className="text-xs font-bold text-[#212529] truncate leading-tight">
                   {user?.name || 'Chef Confeiteiro'}
                 </p>
                 <p className="text-[11px] text-slate-500 truncate leading-tight">
-                  {user?.email || 'Conectado'}
+                  <UserRound className="w-3 h-3 inline mr-1" /> Minha conta
                 </p>
               </div>
-            </div>
+            </button>
 
             <button
               onClick={() => logout()}

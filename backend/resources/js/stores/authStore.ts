@@ -11,6 +11,8 @@ interface AuthState {
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string, password_confirmation: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  clearSession: () => void;
+  setUser: (user: User) => void;
   checkAuth: () => Promise<void>;
   clearError: () => void;
 }
@@ -82,6 +84,17 @@ export const useAuthStore = create<AuthState>((set) => {
         localStorage.removeItem('conta_na_massa_user');
         set({ user: null, token: null });
       }
+    },
+
+    clearSession: () => {
+      localStorage.removeItem('conta_na_massa_token');
+      localStorage.removeItem('conta_na_massa_user');
+      set({ user: null, token: null });
+    },
+
+    setUser: (user) => {
+      localStorage.setItem('conta_na_massa_user', JSON.stringify(user));
+      set({ user });
     },
 
     checkAuth: async () => {

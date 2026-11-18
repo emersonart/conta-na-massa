@@ -17,6 +17,8 @@ import {
   ChevronRight,
   PlusCircle,
   X,
+  Search,
+  AlertCircle,
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { Recipe } from '../types';
@@ -203,26 +205,29 @@ export const RecipesPage: React.FC = () => {
 
       {/* Search Filter */}
       <div className="relative max-w-md">
-        <Input
+        <div className="absolute left-3.5 top-3.5 pointer-events-none text-slate-400">
+          <Search className="w-4 h-4" />
+        </div>
+        <input
+          type="text"
           placeholder="Buscar receita pelo nome..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          prefixText="🔍"
-          className="bg-white"
+          className="w-full min-h-[44px] rounded-xl border border-[#E5DDD0] bg-white pl-10 pr-4 py-2 text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-2 focus:ring-[#E85D04]/15 shadow-2xs"
         />
       </div>
 
       {/* Recipe Cards Grid */}
       {recipes.length === 0 ? (
         <Card className="text-center py-12 border-dashed border-2 border-[#E5DDD0]">
-          <div className="w-12 h-12 rounded-2xl bg-orange-100 text-[#E85D04] flex items-center justify-center mx-auto text-xl">
-            🥐
+          <div className="w-12 h-12 rounded-xl bg-orange-100 text-[#E85D04] flex items-center justify-center mx-auto">
+            <BookOpen className="w-6 h-6" />
           </div>
           <h4 className="font-bold text-[#212529] font-heading mt-3">Nenhuma receita encontrada</h4>
           <p className="text-xs text-slate-500 max-w-xs mx-auto mt-1">
             {searchTerm
               ? `Nenhum resultado para "${searchTerm}".`
-              : 'Cadastre sua primeira receita ou peça no Modo Vibe IA para criar automaticamente.'}
+              : 'Cadastre sua primeira receita ou use o Assistente para estruturar a ficha técnica.'}
           </p>
           <Button variant="primary" size="sm" onClick={handleOpenCreate} className="mt-4" leftIcon={<Plus className="w-4 h-4" />}>
             Criar Minha Primeira Receita
@@ -301,14 +306,14 @@ export const RecipesPage: React.FC = () => {
                     <div className="flex gap-1">
                       <button
                         onClick={(e) => handleOpenEdit(recipe, e)}
-                        className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                        className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
                         title="Editar Receita"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={(e) => handleDelete(recipe.id, recipe.name, e)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                         title="Excluir Receita"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -336,14 +341,15 @@ export const RecipesPage: React.FC = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-5">
           {formError && (
-            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
-              ⚠️ {formError}
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+              <span>{formError}</span>
             </div>
           )}
 
           <Input
             label="Nome da Receita"
-            placeholder="Ex: Bolo Vulcão de Ninho com Nutella, Pão Italiano..."
+            placeholder="Ex: Bolo Vulcão de Ninho, Pão Italiano de Fermentação Natural..."
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -383,7 +389,7 @@ export const RecipesPage: React.FC = () => {
 
           <Input
             label="Descrição Curta (Opcional)"
-            placeholder="Ex: Massa amanteigada de cenoura com calda aveludada..."
+            placeholder="Ex: Massa amanteigada de cenoura com cobertura aveludada..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -407,7 +413,7 @@ export const RecipesPage: React.FC = () => {
 
             {ingredients.length === 0 ? (
               <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
-                Você ainda não tem ingredientes cadastrados na despensa. Cadastre ingredientes primeiro ou crie via Modo Vibe IA.
+                Você ainda não tem ingredientes cadastrados na despensa. Cadastre ingredientes primeiro na aba Despensa.
               </div>
             ) : (
               <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
@@ -426,7 +432,7 @@ export const RecipesPage: React.FC = () => {
                       <select
                         value={item.ingredient_id}
                         onChange={(e) => handleItemChange(index, 'ingredient_id', e.target.value)}
-                        className="flex-1 min-h-[42px] rounded-lg border border-[#E5DDD0] bg-white px-2.5 py-1.5 text-xs sm:text-sm text-[#212529] focus:border-[#E85D04] focus:outline-none"
+                        className="flex-1 min-h-[42px] rounded-lg border border-[#E5DDD0] bg-white px-2.5 py-1.5 text-xs sm:text-sm text-[#212529] focus:border-[#E85D04] focus:outline-none cursor-pointer"
                       >
                         <option value="">Selecione o ingrediente...</option>
                         {ingredients.map((ing) => (
@@ -462,7 +468,7 @@ export const RecipesPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleRemoveItem(index)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -475,7 +481,7 @@ export const RecipesPage: React.FC = () => {
           </div>
 
           {/* Real-time Calculation Summary in Modal */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-50/80 via-amber-50/80 to-emerald-50/80 border border-orange-200/80 space-y-2">
+          <div className="p-4 rounded-xl bg-orange-50/60 border border-orange-200/70 space-y-2">
             <div className="flex items-center justify-between text-xs font-medium text-slate-700">
               <span>Custo de Insumos: R$ {previewIngredientsCost.toFixed(2)}</span>
               <span>Mão de Obra ({prepTimeMinutes}m): R$ {previewLaborCost.toFixed(2)}</span>

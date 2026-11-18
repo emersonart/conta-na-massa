@@ -3,7 +3,7 @@ import { useCostStore } from '../stores/costStore';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
-import { Sliders, Save, CheckCircle2, Calculator, Info } from 'lucide-react';
+import { Sliders, Save, CheckCircle2, Calculator, Info, AlertCircle } from 'lucide-react';
 
 export const CostSettingsPage: React.FC = () => {
   const { settings, fetchSettings, updateSettings, isLoading } = useCostStore();
@@ -94,8 +94,9 @@ export const CostSettingsPage: React.FC = () => {
           )}
 
           {errorMsg && (
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm font-semibold">
-              ⚠️ {errorMsg}
+            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm font-semibold flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+              <span>{errorMsg}</span>
             </div>
           )}
 
@@ -157,7 +158,7 @@ export const CostSettingsPage: React.FC = () => {
 
         {/* Live Simulator Preview */}
         <div className="space-y-4">
-          <Card className="bg-[#FDFBF7] border-2 border-orange-200/80 p-5 space-y-4">
+          <Card className="bg-[#FDFBF7] border border-[#E5DDD0] p-5 space-y-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E85D04] font-heading">
               <Calculator className="w-4 h-4" /> Simulador em Tempo Real
             </div>
@@ -190,7 +191,7 @@ export const CostSettingsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-orange-100/80 border border-orange-200 text-center">
+            <div className="p-3.5 rounded-xl bg-orange-50 border border-orange-200 text-center">
               <span className="text-[10px] uppercase font-bold text-[#E85D04] tracking-wider block">
                 Preço de Venda Resultante
               </span>
@@ -201,11 +202,11 @@ export const CostSettingsPage: React.FC = () => {
           </Card>
 
           <Card className="p-4 bg-white border border-[#E5DDD0] text-xs text-slate-500 space-y-2">
-            <span className="font-bold text-slate-700 flex items-center gap-1">
-              <Info className="w-3.5 h-3.5 text-[#2D6A4F]" /> Dica de Ouro da Confeitaria
+            <span className="font-bold text-slate-700 flex items-center gap-1.5">
+              <Info className="w-3.5 h-3.5 text-[#2D6A4F]" /> Dica de Gestão
             </span>
             <p>
-              Nunca multiplique apenas o custo do ingrediente por 3! Sem calcular o tempo de mão de obra e o gás/luz, você pode estar pagando para trabalhar sem perceber.
+              Evite a regra genérica de multiplicar ingredientes por 3. Sem mensurar tempo de preparo e despesas operacionais fixas, itens complexos geram margens ilusórias.
             </p>
           </Card>
         </div>

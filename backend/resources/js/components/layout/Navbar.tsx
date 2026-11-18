@@ -4,7 +4,7 @@ import {
   Wheat,
   BookOpen,
   Sliders,
-  Sparkles,
+  ChefHat,
   LogOut,
   Menu,
   X,
@@ -13,6 +13,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../ui/Button';
+import { Logo } from '../ui/Logo';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -25,12 +26,11 @@ export const Navbar: React.FC = () => {
     { id: 'dashboard', label: 'Painel', icon: <UtensilsCrossed className="w-4 h-4" /> },
     { id: 'recipes', label: 'Receitas', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'ingredients', label: 'Ingredientes', icon: <Wheat className="w-4 h-4" /> },
-    { id: 'settings', label: 'Margens & Custos', icon: <Sliders className="w-4 h-4" /> },
+    { id: 'settings', label: 'Custos & Margens', icon: <Sliders className="w-4 h-4" /> },
     {
       id: 'vibe',
-      label: 'Modo Vibe',
-      icon: <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />,
-      highlight: true,
+      label: 'Assistente',
+      icon: <ChefHat className="w-4 h-4" />,
     },
   ];
 
@@ -40,49 +40,33 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-[#E5DDD0]">
+    <header className="sticky top-0 z-40 bg-[#FDFBF7]/95 backdrop-blur-sm border-b border-[#E5DDD0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+        <div className="flex items-center justify-between h-16 sm:h-18">
           {/* Logo */}
           <div
             onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-3 cursor-pointer select-none group"
+            className="cursor-pointer select-none"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-[#E85D04] to-[#F4A261] flex items-center justify-center text-white text-xl sm:text-2xl shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
-              🥐
-            </div>
-            <div>
-              <span className="text-lg sm:text-xl font-extrabold font-heading text-[#212529] tracking-tight flex items-center gap-1.5">
-                Conta na Massa
-                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 bg-orange-100 text-[#E85D04] rounded-md border border-orange-200">
-                  Open Source
-                </span>
-              </span>
-              <p className="text-[11px] text-slate-500 hidden sm:block">
-                Precificação para Confeitaria & Panificação
-              </p>
-            </div>
+            <Logo size="md" />
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1 bg-[#F0EAE1]/70 p-1.5 rounded-2xl border border-[#E5DDD0]/60">
+          <nav className="hidden md:flex items-center gap-1 bg-[#F0EAE1]/70 p-1.5 rounded-xl border border-[#E5DDD0]/60">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleTabClick(item.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-white text-[#212529] shadow-sm border border-[#E5DDD0]'
+                      ? 'bg-white text-[#212529] shadow-xs border border-[#E5DDD0]'
                       : 'text-slate-600 hover:text-[#212529] hover:bg-white/50'
-                  } ${item.highlight && !isActive ? 'text-[#E85D04]' : ''}`}
+                  }`}
                 >
                   {item.icon}
                   {item.label}
-                  {item.highlight && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#E85D04] animate-ping" />
-                  )}
                 </button>
               );
             })}
@@ -102,7 +86,7 @@ export const Navbar: React.FC = () => {
             <div className="h-6 w-px bg-[#E5DDD0]" />
 
             <div className="flex items-center gap-2.5 pl-1">
-              <div className="w-8 h-8 rounded-full bg-[#2D6A4F] text-white font-bold text-xs flex items-center justify-center uppercase shadow-inner">
+              <div className="w-8 h-8 rounded-full bg-[#2D6A4F] text-white font-bold text-xs flex items-center justify-center uppercase shadow-xs">
                 {user?.name?.[0] || 'U'}
               </div>
               <div className="text-left">
@@ -119,18 +103,20 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Actions */}
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={() => handleTabClick('vibe')}
-              className="p-2 rounded-xl bg-orange-100 text-[#E85D04] border border-orange-200 text-xs font-bold flex items-center gap-1"
+              className="p-2 rounded-xl bg-orange-100 text-[#E85D04] border border-orange-200 text-xs font-bold flex items-center gap-1.5"
             >
-              <Sparkles className="w-4 h-4" /> Vibe
+              <ChefHat className="w-4 h-4" />
+              <span>Assistente</span>
             </button>
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2.5 rounded-xl border border-[#E5DDD0] bg-white text-slate-700 hover:bg-slate-50"
+              className="p-2 rounded-xl border border-[#E5DDD0] bg-white text-slate-700 hover:bg-slate-50"
+              aria-label="Menu"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -147,27 +133,22 @@ export const Navbar: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => handleTabClick(item.id)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#E85D04] text-white shadow-md'
+                    ? 'bg-[#E85D04] text-white shadow-xs'
                     : 'bg-white text-slate-800 border border-[#E5DDD0]'
                 }`}
               >
-                <span className="flex items-center gap-3">
+                <span className="flex items-center gap-2.5">
                   {item.icon}
                   {item.label}
                 </span>
-                {item.highlight && !isActive && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 bg-orange-100 text-[#E85D04] rounded-md">
-                    IA
-                  </span>
-                )}
               </button>
             );
           })}
 
           <div className="pt-3 border-t border-[#E5DDD0] flex items-center justify-between px-2">
-            <span className="text-xs font-semibold text-slate-600">Conectado como {user?.name}</span>
+            <span className="text-xs font-medium text-slate-600">Conectado como {user?.name}</span>
             <Button variant="ghost" size="sm" onClick={() => logout()} leftIcon={<LogOut className="w-4 h-4 text-rose-500" />}>
               Sair
             </Button>

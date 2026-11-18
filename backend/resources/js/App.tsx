@@ -34,7 +34,10 @@ function AppContent() {
   if (isCheckingAuth) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#F8F6F0]">
-        <div className="animate-spin text-[#E85D04] text-4xl">🥐</div>
+        <svg className="animate-spin h-8 w-8 text-[#E85D04]" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+        </svg>
       </div>
     );
   }
@@ -75,15 +78,13 @@ function AppContent() {
       </main>
 
       {!isAuthPage && (
-        <footer className="border-t border-[#E5DDD0] bg-[#FDFBF7] py-6 text-center text-xs text-slate-500">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="flex items-center gap-1.5">
-              🥐 <strong>Conta na Massa</strong> — Sistema Open Source de Precificação Gastronômica.
+        <footer className="border-t border-[#E5DDD0] bg-[#FDFBF7] py-5 text-xs text-slate-500">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p className="flex items-center gap-1.5 font-medium text-slate-600 text-center sm:text-left">
+              <span>Conta na Massa</span> — Fichas técnicas e precificação precisa para confeitaria e panificação.
             </p>
-            <div className="flex items-center gap-4 text-slate-600 font-medium">
-              <span>Laravel 13 + React 19 + PostgreSQL 16</span>
-              <span>•</span>
-              <span className="text-[#E85D04]">Licença MIT</span>
+            <div className="flex items-center gap-3 text-slate-400 text-xs">
+              <span>Produção & Finanças</span>
             </div>
           </div>
         </footer>

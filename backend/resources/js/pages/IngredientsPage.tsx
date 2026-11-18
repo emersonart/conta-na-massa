@@ -5,7 +5,7 @@ import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
 import { Badge } from '../components/ui/Badge';
-import { Wheat, Plus, Trash2, Edit2, Scale, AlertCircle } from 'lucide-react';
+import { Wheat, Plus, Trash2, Edit2, Scale, AlertCircle, Search } from 'lucide-react';
 import type { Ingredient, UnitType } from '../types';
 
 export const IngredientsPage: React.FC = () => {
@@ -100,7 +100,6 @@ export const IngredientsPage: React.FC = () => {
     }
   };
 
-  // Unit cost calculation preview
   const numQty = parseFloat(packageQuantity) || 0;
   const numCost = parseFloat(packageCostBrl) || 0;
   const calculatedUnitCost = numQty > 0 ? numCost / numQty : 0;
@@ -114,7 +113,7 @@ export const IngredientsPage: React.FC = () => {
             <Wheat className="w-6 h-6 text-[#E85D04]" /> Despensa de Ingredientes
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Cadastre os produtos que você compra com o valor da embalagem. O custo por grama/ml é calculado automaticamente.
+            Cadastre os insumos comprados com o valor da embalagem. O custo unitário é calculado automaticamente.
           </p>
         </div>
 
@@ -125,20 +124,23 @@ export const IngredientsPage: React.FC = () => {
 
       {/* Search Filter */}
       <div className="relative max-w-md">
-        <Input
+        <div className="absolute left-3.5 top-3.5 pointer-events-none text-slate-400">
+          <Search className="w-4 h-4" />
+        </div>
+        <input
+          type="text"
           placeholder="Buscar ingrediente por nome..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          prefixText="🔍"
-          className="bg-white"
+          className="w-full min-h-[44px] rounded-xl border border-[#E5DDD0] bg-white pl-10 pr-4 py-2 text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-2 focus:ring-[#E85D04]/15 shadow-2xs"
         />
       </div>
 
-      {/* Ingredients Grid / Table */}
+      {/* Ingredients Grid */}
       {ingredients.length === 0 ? (
         <Card className="text-center py-12 border-dashed border-2 border-[#E5DDD0]">
-          <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center mx-auto text-xl">
-            🌾
+          <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center mx-auto">
+            <Wheat className="w-6 h-6" />
           </div>
           <h4 className="font-bold text-[#212529] font-heading mt-3">Nenhum ingrediente encontrado</h4>
           <p className="text-xs text-slate-500 max-w-xs mx-auto mt-1">
@@ -233,7 +235,7 @@ export const IngredientsPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {formError && (
             <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{formError}</span>
             </div>
           )}

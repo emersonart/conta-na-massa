@@ -28,11 +28,29 @@ export const RecipeDetailPage: React.FC = () => {
     }
   }, [id, fetchRecipe]);
 
-  if (isLoading) return <div className="p-8 text-center">Carregando...</div>;
-  if (!recipe) return <div className="p-8 text-center">Receita não encontrada</div>;
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <svg className="animate-spin h-8 w-8 text-[#E85D04]" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+        </svg>
+      </div>
+    );
+  }
+
+  if (!recipe) {
+    return (
+      <div className="p-12 text-center space-y-3">
+        <p className="text-slate-500 font-medium">Receita não encontrada</p>
+        <Button variant="outline" size="sm" onClick={() => navigate('/recipes')}>
+          Voltar para Receitas
+        </Button>
+      </div>
+    );
+  }
 
   const fin = recipe.financials;
-
   const scaledYield = (recipe.yield_quantity || 1) * multiplier;
   const scaledSellingPrice = (fin?.suggested_selling_price_brl || 0) * multiplier;
 
@@ -67,7 +85,7 @@ export const RecipeDetailPage: React.FC = () => {
                 Margem de +{fin?.profit_margin_pct.toFixed(0)}%
               </Badge>
               <span className="text-xs text-slate-500 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> {recipe.prep_time_minutes} min de preparo
+                <Clock className="w-3.5 h-3.5 text-slate-400" /> {recipe.prep_time_minutes} min de preparo
               </span>
             </div>
 
@@ -80,8 +98,8 @@ export const RecipeDetailPage: React.FC = () => {
             )}
           </div>
 
-          {/* Big Highlight Pricing Badge */}
-          <div className="p-4 rounded-2xl bg-white border border-[#E5DDD0] text-right shadow-sm shrink-0">
+          {/* Pricing Highlight Card */}
+          <div className="p-4 rounded-xl bg-white border border-[#E5DDD0] text-right shadow-2xs shrink-0">
             <span className="text-[11px] uppercase font-bold text-[#E85D04] tracking-wider block">
               Preço de Venda Sugerido
             </span>
@@ -107,7 +125,7 @@ export const RecipeDetailPage: React.FC = () => {
                 onClick={() => setMultiplier(m)}
                 className={`px-3 py-1 rounded-lg font-bold transition-colors cursor-pointer tabular-nums ${
                   multiplier === m
-                    ? 'bg-[#E85D04] text-white shadow-xs'
+                    ? 'bg-[#E85D04] text-white shadow-2xs'
                     : 'text-slate-700 hover:bg-white/60'
                 }`}
               >
@@ -184,7 +202,7 @@ export const RecipeDetailPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* Sales Channels Simulation (Venda Direta, Delivery, Atacado) */}
+      {/* Sales Channels Simulation */}
       {fin && (
         <div className="space-y-3">
           <h3 className="text-lg font-bold font-heading text-[#212529]">
@@ -192,9 +210,9 @@ export const RecipeDetailPage: React.FC = () => {
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Card className="p-4 bg-white border-2 border-emerald-300 flex flex-col justify-between space-y-3">
+            <Card className="p-4 bg-white border border-emerald-300 flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-xs uppercase text-[#2D6A4F] flex items-center gap-1">
+                <span className="font-bold text-xs uppercase text-[#2D6A4F] flex items-center gap-1.5">
                   <ShoppingBag className="w-4 h-4" /> Balcão / Encomenda Direta
                 </span>
                 <Badge variant="sage" size="sm">
@@ -206,14 +224,14 @@ export const RecipeDetailPage: React.FC = () => {
                 <p className="text-2xl font-black text-[#2D6A4F] tabular-nums font-heading">
                   R$ {(fin.scenarios.direct_sale * multiplier).toFixed(2)}
                 </p>
-                <p className="text-xs text-slate-600 mt-1">Lucro líquido máximo sem taxas de terceiros.</p>
+                <p className="text-xs text-slate-600 mt-1">Lucro líquido máximo sem intermediação.</p>
               </div>
             </Card>
 
             <Card className="p-4 bg-white border border-amber-300 flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-xs uppercase text-amber-800 flex items-center gap-1">
-                  <Truck className="w-4 h-4" /> Aplicativos de Delivery (+15%)
+                <span className="font-bold text-xs uppercase text-amber-800 flex items-center gap-1.5">
+                  <Truck className="w-4 h-4" /> Aplicativos de Entrega (+15%)
                 </span>
                 <Badge variant="mustard" size="sm">
                   Repasse Taxa
@@ -224,17 +242,17 @@ export const RecipeDetailPage: React.FC = () => {
                 <p className="text-2xl font-black text-amber-900 tabular-nums font-heading">
                   R$ {(fin.scenarios.delivery_app_15pct * multiplier).toFixed(2)}
                 </p>
-                <p className="text-xs text-slate-600 mt-1">Garante a mesma margem cobrindo comissão de app.</p>
+                <p className="text-xs text-slate-600 mt-1">Absorve comissão de plataforma mantendo a margem.</p>
               </div>
             </Card>
 
             <Card className="p-4 bg-white border border-slate-300 flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-xs uppercase text-slate-700 flex items-center gap-1">
+                <span className="font-bold text-xs uppercase text-slate-700 flex items-center gap-1.5">
                   <DollarSign className="w-4 h-4" /> Venda no Atacado / Revenda
                 </span>
                 <Badge variant="charcoal" size="sm">
-                  Volume Alto
+                  Alto Volume
                 </Badge>
               </div>
               <div>
@@ -242,7 +260,7 @@ export const RecipeDetailPage: React.FC = () => {
                 <p className="text-2xl font-black text-slate-800 tabular-nums font-heading">
                   R$ {(fin.scenarios.wholesale * multiplier).toFixed(2)}
                 </p>
-                <p className="text-xs text-slate-600 mt-1">Margem reduzida compensada pelo volume de pedidos.</p>
+                <p className="text-xs text-slate-600 mt-1">Margem unitária reduzida compensada por volume.</p>
               </div>
             </Card>
           </div>

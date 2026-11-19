@@ -118,6 +118,29 @@ class AccountController extends Controller
         return response()->json(['message' => 'Senha alterada. As outras sessões foram encerradas.']);
     }
 
+    public function validateEmailChangeToken(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'token' => ['required', 'string', 'size:64'],
+        ]);
+
+        $tokenHash = hash('sha256', $validated['token']);
+        $isValid = User::query()
+            ->where('email_change_token_hash', $tokenHash)
+            ->where('email_change_expires_at', '>', now())
+            ->whereNotNull('pending_email')
+            ->exists();
+
+        if (! $isValid) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Este link é inválido, expirou ou já foi usado. Solicite a alteração novamente.',
+            ], 422);
+        }
+
+        return response()->json(['valid' => true]);
+    }
+
     public function confirmEmailChange(Request $request): JsonResponse
     {
         $validated = $request->validate([

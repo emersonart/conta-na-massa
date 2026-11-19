@@ -107,6 +107,27 @@ class AuthController extends Controller
         ]);
     }
 
+    /** Check whether a password reset token is still active without consuming it. */
+    public function validateResetToken(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email:rfc', 'max:255'],
+        ]);
+
+        $email = $this->canonicalEmailForPasswordBroker($validated['email']);
+        $user = User::query()->where('email', $email)->first();
+
+        if (! $user || ! Password::broker()->tokenExists($user, $validated['token'])) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Este link é inválido, expirou ou já foi usado. Solicite uma nova redefinição.',
+            ], 422);
+        }
+
+        return response()->json(['valid' => true]);
+    }
+
     /** Reset a password using Laravel's one-time, expiring password broker token. */
     public function resetPassword(Request $request): JsonResponse
     {

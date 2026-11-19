@@ -5,10 +5,15 @@
  *
  * @see https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/
  */
+$dsn = trim((string) env('SENTRY_LARAVEL_DSN', ''));
+$traceSampleRate = env('SENTRY_TRACES_SAMPLE_RATE');
+
 return [
 
     // @see https://docs.sentry.io/concepts/key-terms/dsn-explainer/
-    'dsn' => env('SENTRY_LARAVEL_DSN', env('SENTRY_DSN')),
+    // Empty/whitespace DSNs disable the SDK. The same runtime value is exposed
+    // to the browser by the Blade shell so deploys only need one DSN variable.
+    'dsn' => $dsn !== '' ? $dsn : null,
 
     // @see https://spotlightjs.com/
     // 'spotlight' => env('SENTRY_SPOTLIGHT', false),
@@ -30,7 +35,7 @@ return [
     'sample_rate' => env('SENTRY_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_SAMPLE_RATE'),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces_sample_rate
-    'traces_sample_rate' => env('SENTRY_TRACES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_TRACES_SAMPLE_RATE'),
+    'traces_sample_rate' => is_numeric($traceSampleRate) ? (float) $traceSampleRate : 0.01,
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#profiles_sample_rate
     'profiles_sample_rate' => env('SENTRY_PROFILES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_PROFILES_SAMPLE_RATE'),
@@ -39,7 +44,7 @@ return [
     'strict_trace_continuation' => env('SENTRY_STRICT_TRACE_CONTINUATION', false),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_logs
-    'enable_logs' => env('SENTRY_ENABLE_LOGS', false),
+    'enable_logs' => (bool) env('SENTRY_ENABLE_LOGS', $dsn !== ''),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_metrics
     'enable_metrics' => env('SENTRY_ENABLE_METRICS', true),
@@ -48,7 +53,7 @@ return [
     'log_flush_threshold' => env('SENTRY_LOG_FLUSH_THRESHOLD') === null ? null : (int) env('SENTRY_LOG_FLUSH_THRESHOLD'),
 
     // The minimum log level that will be sent to Sentry as logs using the `sentry_logs` logging channel
-    'logs_channel_level' => env('SENTRY_LOG_LEVEL', env('SENTRY_LOGS_LEVEL', env('LOG_LEVEL', 'debug'))),
+    'logs_channel_level' => env('SENTRY_LOG_LEVEL', env('SENTRY_LOGS_LEVEL', 'info')),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send_default_pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),

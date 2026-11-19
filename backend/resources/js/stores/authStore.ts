@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { apiClient } from '../api/client';
 import type { User } from '../types';
+import { telemetryLog } from '../observability';
 
 interface AuthState {
   user: User | null;
@@ -38,8 +39,10 @@ export const useAuthStore = create<AuthState>((set) => {
         localStorage.setItem('conta_na_massa_user', JSON.stringify(user));
 
         set({ user, token, isLoading: false });
+        telemetryLog.info('auth.login.succeeded');
         return true;
       } catch (err: any) {
+        telemetryLog.warn('auth.login.failed', { status: err.response?.status ?? 'network_error' });
         const message = err.response?.data?.message || err.response?.data?.errors?.email?.[0] || 'Falha ao autenticar.';
         set({ error: message, isLoading: false });
         return false;
@@ -61,8 +64,10 @@ export const useAuthStore = create<AuthState>((set) => {
         localStorage.setItem('conta_na_massa_user', JSON.stringify(user));
 
         set({ user, token, isLoading: false });
+        telemetryLog.info('auth.register.succeeded');
         return true;
       } catch (err: any) {
+        telemetryLog.warn('auth.register.failed', { status: err.response?.status ?? 'network_error' });
         const errorsObj = (err.response?.data?.errors || {}) as Record<string, string[]>;
         const firstErrorList = Object.values(errorsObj)[0];
         const firstError = Array.isArray(firstErrorList) ? firstErrorList[0] : null;
@@ -81,6 +86,7 @@ export const useAuthStore = create<AuthState>((set) => {
         localStorage.removeItem('conta_na_massa_token');
         localStorage.removeItem('conta_na_massa_user');
         set({ user: null, token: null });
+        telemetryLog.info('auth.logout.completed');
       }
     },
 
@@ -105,6 +111,9 @@ export const useAuthStore = create<AuthState>((set) => {
             localStorage.removeItem('conta_na_massa_token');
             localStorage.removeItem('conta_na_massa_user');
             set({ user: null, token: null });
+          }
+          if (err.response?.status !== 401) {
+            telemetryLog.error('auth.session_check.failed', { status: err.response?.status ?? 'network_error' });
           }
           set({ isCheckingAuth: false });
         }

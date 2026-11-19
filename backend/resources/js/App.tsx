@@ -11,6 +11,7 @@ import { RecipesPage } from './pages/RecipesPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { CostSettingsPage } from './pages/CostSettingsPage';
 import { VibeChatPage } from './pages/VibeChatPage';
+import { setTelemetryUser } from './observability';
 
 function AppContent() {
   const { checkAuth, logout, user, token, isCheckingAuth } = useAuthStore();
@@ -32,6 +33,11 @@ function AppContent() {
       window.removeEventListener('auth:unauthorized', handleUnauthorized);
     };
   }, [checkAuth, logout, navigate]);
+
+  useEffect(() => {
+    // Use an opaque account ID only; never send name, e-mail, or auth token.
+    setTelemetryUser(user?.id);
+  }, [user?.id]);
 
   if (isCheckingAuth) {
     return (

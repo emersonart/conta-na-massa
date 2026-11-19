@@ -11,6 +11,13 @@
     @vite(['resources/js/index.css', 'resources/js/main.tsx'])
 </head>
 <body class="bg-[#F8F6F0] text-[#212529] font-sans antialiased h-full">
-    <div id="root" class="h-full"></div>
+    <div
+        id="root"
+        class="h-full"
+        data-sentry-dsn="{{ config('sentry.dsn') }}"
+        data-sentry-environment="{{ config('sentry.environment') ?: config('app.env') }}"
+        data-sentry-release="{{ config('sentry.release') }}"
+        data-sentry-traces-sample-rate="{{ config('sentry.traces_sample_rate') ?? 0.01 }}"
+    ></div>
 </body>
 </html>

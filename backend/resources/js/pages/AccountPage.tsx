@@ -5,6 +5,8 @@ import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { useAuthStore } from '../stores/authStore';
+import { openCookiePreferences } from '../analytics/consent';
+import { trackEvent } from '../analytics/umami';
 import type { User } from '../types';
 
 function getErrorMessage(error: any): string {
@@ -51,6 +53,9 @@ export const AccountPage: React.FC = () => {
       setUser(updatedUser);
       setProfileMessage(response.data.message);
       setProfilePassword('');
+      trackEvent(
+        updatedUser.pending_email ? 'account_email_change_requested' : 'account_profile_updated'
+      );
     } catch (error: any) {
       setProfileError(getErrorMessage(error));
     } finally {
@@ -73,6 +78,7 @@ export const AccountPage: React.FC = () => {
       setCurrentPassword('');
       setNewPassword('');
       setPasswordConfirmation('');
+      trackEvent('account_password_updated');
     } catch (error: any) {
       setPasswordError(getErrorMessage(error));
     } finally {
@@ -116,6 +122,20 @@ export const AccountPage: React.FC = () => {
           <Input label="Confirmar nova senha" type="password" value={passwordConfirmation} onChange={(event) => setPasswordConfirmation(event.target.value)} required minLength={12} autoComplete="new-password" />
           <Button type="submit" variant="secondary" isLoading={passwordLoading}>Atualizar senha</Button>
         </form>
+      </Card>
+
+      <Card>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h3 className="font-semibold text-[#212529]">Privacidade e cookies (LGPD)</h3>
+            <p className="text-xs text-slate-500 mt-1">
+              Revise ou revogue o consentimento de métricas opcionais de uso a qualquer momento.
+            </p>
+          </div>
+          <Button type="button" variant="outline" size="sm" onClick={openCookiePreferences}>
+            Gerenciar cookies
+          </Button>
+        </div>
       </Card>
     </div>
   );

@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Logo } from '../components/ui/Logo';
 import { useAuthStore } from '../stores/authStore';
+import { trackEvent } from '../analytics/umami';
 
 type TokenStatus = 'checking' | 'valid' | 'invalid';
 
@@ -66,6 +67,7 @@ export const ConfirmEmailChangePage: React.FC = () => {
       setMessage(response.data.message);
       useAuthStore.getState().clearSession();
       window.history.replaceState({}, document.title, '/confirm-email-change');
+      trackEvent('account_email_change_confirmed');
     } catch (requestError: any) {
       setError(requestError.response?.data?.message || 'Não foi possível confirmar este endereço.');
     } finally {

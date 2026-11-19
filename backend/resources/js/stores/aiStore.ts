@@ -3,6 +3,7 @@ import { apiClient } from '../api/client';
 import type { AiMessage, AiUserProfile } from '../types';
 import { useIngredientStore } from './ingredientStore';
 import { useRecipeStore } from './recipeStore';
+import { trackEvent } from '../analytics/umami';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
@@ -86,6 +87,7 @@ export const useAiStore = create<AiState>((set, get) => ({
     const newSessionId = crypto.randomUUID();
     localStorage.setItem('vibe_chat_session_id', newSessionId);
     set({ sessionId: newSessionId, messages: [] });
+    trackEvent('ai_assistant_session_started');
   },
 
   sendMessage: async (message) => {
@@ -195,6 +197,9 @@ export const useAiStore = create<AiState>((set, get) => ({
               // Refresh stores when database changes occur
               useIngredientStore.getState().fetchIngredients();
               useRecipeStore.getState().fetchRecipes();
+              trackEvent('ai_assistant_tool_executed', {
+                tool: action?.tool || action?.name || 'unknown',
+              });
             } else if (eventName === 'done') {
               if (parsedData.session_id) {
                 localStorage.setItem('vibe_chat_session_id', parsedData.session_id);
@@ -203,6 +208,9 @@ export const useAiStore = create<AiState>((set, get) => ({
               if (parsedData.user_profile) {
                 set({ userProfile: parsedData.user_profile });
               }
+              trackEvent('ai_assistant_message_sent', {
+                provider: get().activeProvider,
+              });
               // Refresh sessions list after a message is completed
               get().fetchSessions();
             }
@@ -241,6 +249,7 @@ export const useAiStore = create<AiState>((set, get) => ({
       });
       get().startNewSession();
       get().fetchSessions();
+      trackEvent('ai_assistant_history_cleared');
     } catch (e) {
       // ignore
     }

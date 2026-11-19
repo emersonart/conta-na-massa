@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { apiClient } from '../api/client';
 import type { Ingredient } from '../types';
+import { trackEvent } from '../analytics/umami';
 
 interface IngredientState {
   ingredients: Ingredient[];
@@ -41,6 +42,7 @@ export const useIngredientStore = create<IngredientState>((set, get) => ({
         ingredients: [newIng, ...get().ingredients],
         isLoading: false,
       });
+      trackEvent('ingredient_created', { unit: newIng?.unit });
       return newIng;
     } catch (err: any) {
       set({
@@ -60,6 +62,7 @@ export const useIngredientStore = create<IngredientState>((set, get) => ({
         ingredients: get().ingredients.map((ing) => (ing.id === id ? updated : ing)),
         isLoading: false,
       });
+      trackEvent('ingredient_updated', { unit: updated?.unit });
       return true;
     } catch (err: any) {
       set({
@@ -78,6 +81,7 @@ export const useIngredientStore = create<IngredientState>((set, get) => ({
         ingredients: get().ingredients.filter((ing) => ing.id !== id),
         isLoading: false,
       });
+      trackEvent('ingredient_deleted');
       return true;
     } catch (err: any) {
       set({

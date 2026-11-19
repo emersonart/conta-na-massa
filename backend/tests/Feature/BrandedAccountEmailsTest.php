@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Notifications\ConfirmEmailChangeNotification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class BrandedAccountEmailsTest extends TestCase
@@ -31,6 +33,9 @@ class BrandedAccountEmailsTest extends TestCase
 
         $expectedUrl = 'https://conta-na-massa.example.test/reset-password?token=token-reset-123&email=juliana%40confeitaria.test';
 
+        $this->assertFileExists(public_path('images/logo-email.png'));
+        $this->assertStringContainsString('https://conta-na-massa.example.test/images/logo-email.png', $html);
+        $this->assertStringNotContainsString('&#x1F950;', $html);
         $this->assertStringContainsString('Conta na Massa', $html);
         $this->assertStringContainsString('Redefina sua senha', $html);
         $this->assertStringContainsString('Olá, Chef Juliana!', $html);
@@ -73,5 +78,67 @@ class BrandedAccountEmailsTest extends TestCase
 
         $this->assertStringContainsString('Confirme seu novo e-mail', $text);
         $this->assertStringContainsString($expectedUrl, $text);
+    }
+
+    public function test_reset_password_token_validation_accepts_active_and_rejects_used_token(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'juliana@confeitaria.test',
+        ]);
+
+        $token = Password::broker()->createToken($user);
+
+        $this->postJson('/api/v1/auth/reset-password/validate', [
+            'email' => $user->email,
+            'token' => $token,
+        ])->assertOk()->assertExactJson(['valid' => true]);
+
+        $this->postJson('/api/v1/auth/reset-password', [
+            'email' => $user->email,
+            'token' => $token,
+            'password' => 'NovaSenhaSegura123',
+            'password_confirmation' => 'NovaSenhaSegura123',
+        ])->assertOk();
+
+        $this->postJson('/api/v1/auth/reset-password/validate', [
+            'email' => $user->email,
+            'token' => $token,
+        ])->assertStatus(422)->assertJson([
+            'valid' => false,
+        ]);
+
+        $this->postJson('/api/v1/auth/reset-password/validate', [
+            'email' => 'desconhecido@confeitaria.test',
+            'token' => $token,
+        ])->assertStatus(422)->assertJson([
+            'valid' => false,
+        ]);
+    }
+
+    public function test_email_change_token_validation_accepts_active_and_rejects_used_or_expired_token(): void
+    {
+        $token = Str::random(64);
+        $user = User::factory()->create([
+            'email' => 'antigo@confeitaria.test',
+        ]);
+        $user->forceFill([
+            'pending_email' => 'novo@confeitaria.test',
+            'email_change_token_hash' => hash('sha256', $token),
+            'email_change_expires_at' => now()->addMinutes(30),
+        ])->save();
+
+        $this->postJson('/api/v1/auth/email-change/validate', [
+            'token' => $token,
+        ])->assertOk()->assertExactJson(['valid' => true]);
+
+        $this->postJson('/api/v1/auth/email-change/confirm', [
+            'token' => $token,
+        ])->assertOk();
+
+        $this->postJson('/api/v1/auth/email-change/validate', [
+            'token' => $token,
+        ])->assertStatus(422)->assertJson([
+            'valid' => false,
+        ]);
     }
 }

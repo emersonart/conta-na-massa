@@ -24,8 +24,8 @@
                     <td align="center" style="padding:0 0 24px 0;">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                                <td align="center" valign="middle" width="44" height="44" style="width:44px;height:44px;border-radius:12px;background-color:#E85D04;background-image:linear-gradient(135deg,#E85D04 0%,#F4A261 100%);text-align:center;vertical-align:middle;font-size:22px;line-height:44px;">
-                                    &#x1F950;
+                                <td align="center" valign="middle" width="44" height="44" style="width:44px;height:44px;border-radius:12px;background-color:#E85D04;text-align:center;vertical-align:middle;">
+                                    <img src="{{ rtrim((string) config('app.frontend_url'), '/') }}/images/logo-email.png" alt="Conta na Massa" width="44" height="44" style="display:block;width:44px;height:44px;border-radius:12px;border:0;">
                                 </td>
                                 <td style="padding-left:12px;text-align:left;vertical-align:middle;">
                                     <div style="font-family:'Outfit','DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:21px;font-weight:800;color:#212529;letter-spacing:-0.02em;line-height:1.15;">

@@ -24,14 +24,26 @@ class ConfirmEmailChangeNotification extends Notification
     {
         $url = rtrim((string) config('app.frontend_url'), '/')
             .'/confirm-email-change?token='.urlencode($this->token);
+        $name = trim($this->accountName);
+        $greeting = $name !== '' ? "Olá, {$name}!" : 'Olá!';
 
         return (new MailMessage)
             ->subject('Confirme seu novo e-mail — Conta na Massa')
-            ->greeting('Olá, '.$this->accountName.'.')
-            ->line('Recebemos uma solicitação para alterar o e-mail da sua conta.')
-            ->line('Seu e-mail atual continua ativo até a confirmação do novo endereço.')
-            ->action('Confirmar novo e-mail', $url)
-            ->line('Por segurança, este link expira em 60 minutos e só pode ser usado uma vez.')
-            ->line('Se você não solicitou a alteração, ignore esta mensagem.');
+            ->view(['emails.account-action', 'emails.account-action-text'], [
+                'preheader' => 'Confirme seu novo endereço de e-mail no Conta na Massa.',
+                'badge' => 'Confirmação de e-mail',
+                'title' => 'Confirme seu novo e-mail',
+                'greeting' => $greeting,
+                'introLines' => [
+                    'Recebemos uma solicitação para atualizar o endereço de e-mail da sua conta no Conta na Massa.',
+                    'Seu e-mail atual continua ativo até você confirmar o novo endereço pelo botão abaixo.',
+                ],
+                'actionText' => 'Confirmar novo e-mail',
+                'actionUrl' => $url,
+                'securityNote' => 'Por segurança, este link expira em 60 minutos e só pode ser usado uma vez.',
+                'outroLines' => [
+                    'Se você não solicitou essa alteração, ignore esta mensagem — nada será alterado na sua conta.',
+                ],
+            ]);
     }
 }

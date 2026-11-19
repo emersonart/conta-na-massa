@@ -4,6 +4,7 @@ import { useAuthStore } from './stores/authStore';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
+import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { IngredientsPage } from './pages/IngredientsPage';
@@ -61,10 +62,7 @@ function AppContent() {
     return <Navigate to="/dashboard" replace />;
   }
   
-  // If we are at the root and NOT authenticated, go to login
-  if (location.pathname === '/' && (!token || !user)) {
-    return <Navigate to="/login" replace />;
-  }
+  if (location.pathname === '/') return <LandingPage />;
 
   const isAuthPage = ['/login', '/forgot-password', '/reset-password', '/confirm-email-change'].includes(location.pathname);
 

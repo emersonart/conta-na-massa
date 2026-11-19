@@ -17,7 +17,7 @@ import { ConfirmEmailChangePage } from './pages/ConfirmEmailChangePage';
 import { setTelemetryUser } from './observability';
 
 function AppContent() {
-  const { checkAuth, logout, user, token, isCheckingAuth } = useAuthStore();
+  const { checkAuth, clearSession, user, token, isCheckingAuth } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -27,7 +27,7 @@ function AppContent() {
     
     // Listen for global unauthorized events to prevent zombie states
     const handleUnauthorized = () => {
-      logout();
+      clearSession();
       navigate('/login', { replace: true });
     };
 
@@ -35,7 +35,7 @@ function AppContent() {
     return () => {
       window.removeEventListener('auth:unauthorized', handleUnauthorized);
     };
-  }, [checkAuth, logout, navigate]);
+  }, [checkAuth, clearSession, navigate]);
 
   useEffect(() => {
     // Use an opaque account ID only; never send name, e-mail, or auth token.

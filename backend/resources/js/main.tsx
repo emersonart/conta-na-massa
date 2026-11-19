@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
 import { initializeTelemetry } from './observability'
+import { initAnalytics } from './analytics/umami'
+
+initAnalytics()
 
 const root = createRoot(document.getElementById('root')!)
 const app = (

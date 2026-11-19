@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { apiClient } from '../api/client';
 import type { CostSetting } from '../types';
+import { trackEvent } from '../analytics/umami';
 
 interface CostState {
   settings: CostSetting;
@@ -37,6 +38,7 @@ export const useCostStore = create<CostState>((set) => ({
     try {
       const response = await apiClient.put('/cost-settings', data);
       set({ settings: response.data.data, isLoading: false });
+      trackEvent('cost_settings_updated');
       return true;
     } catch (err: any) {
       set({

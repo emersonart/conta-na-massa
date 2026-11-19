@@ -11,6 +11,7 @@
     @vite(['resources/js/index.css', 'resources/js/main.tsx'])
 </head>
 <body class="bg-[#F8F6F0] text-[#212529] font-sans antialiased h-full">
+    <!-- Analytics (Umami v3) é carregado dinamicamente apenas após consentimento explícito do titular (LGPD — Lei 13.709/2018) -->
     <div
         id="root"
         class="h-full"
@@ -18,6 +19,10 @@
         data-sentry-environment="{{ config('sentry.environment') ?: config('app.env') }}"
         data-sentry-release="{{ config('sentry.release') }}"
         data-sentry-traces-sample-rate="{{ config('sentry.traces_sample_rate') ?? 0.01 }}"
+        data-umami-script-url="{{ config('analytics.umami.script_url') }}"
+        data-umami-website-id="{{ config('analytics.umami.website_id') }}"
+        data-umami-host-url="{{ config('analytics.umami.host_url') }}"
+        data-umami-domains="{{ config('analytics.umami.domains') }}"
     ></div>
 </body>
 </html>

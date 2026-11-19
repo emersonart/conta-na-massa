@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { apiClient } from '../api/client';
 import type { User } from '../types';
 import { telemetryLog } from '../observability';
+import { trackEvent } from '../analytics/umami';
 
 interface AuthState {
   user: User | null;
@@ -42,6 +43,7 @@ export const useAuthStore = create<AuthState>((set) => {
 
         set({ user, token, isLoading: false });
         telemetryLog.info('auth.login.succeeded');
+        trackEvent('auth_login_success');
         return true;
       } catch (err: any) {
         telemetryLog.warn('auth.login.failed', { status: err.response?.status ?? 'network_error' });
@@ -67,6 +69,7 @@ export const useAuthStore = create<AuthState>((set) => {
 
         set({ user, token, isLoading: false });
         telemetryLog.info('auth.register.succeeded');
+        trackEvent('auth_register_success');
         return true;
       } catch (err: any) {
         telemetryLog.warn('auth.register.failed', { status: err.response?.status ?? 'network_error' });
@@ -89,6 +92,7 @@ export const useAuthStore = create<AuthState>((set) => {
         localStorage.removeItem('conta_na_massa_user');
         set({ user: null, token: null });
         telemetryLog.info('auth.logout.completed');
+        trackEvent('auth_logout');
       }
     },
 

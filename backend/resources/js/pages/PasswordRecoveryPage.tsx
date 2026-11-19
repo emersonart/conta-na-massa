@@ -7,6 +7,7 @@ import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { Logo } from '../components/ui/Logo';
 import { useAuthStore } from '../stores/authStore';
+import { trackEvent } from '../analytics/umami';
 
 type ResetTokenStatus = 'idle' | 'checking' | 'valid' | 'invalid';
 
@@ -97,9 +98,11 @@ export const PasswordRecoveryPage: React.FC = () => {
         useAuthStore.getState().clearSession();
         window.history.replaceState({}, document.title, '/reset-password');
         setMessage(response.data.message);
+        trackEvent('auth_password_reset_completed');
       } else {
         const response = await apiClient.post('/auth/forgot-password', { email });
         setMessage(response.data.message);
+        trackEvent('auth_password_reset_requested');
       }
     } catch (requestError: any) {
       const errors = requestError.response?.data?.errors as Record<string, string[]> | undefined;

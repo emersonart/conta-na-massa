@@ -96,5 +96,8 @@ class GlitchTipConfigurationTest extends TestCase
 
         config(['sentry.dsn' => 'https://public@example.invalid/1']);
         $this->get('/')->assertOk()->assertSee('data-sentry-dsn="https://public@example.invalid/1"', false);
+
+        config(['sentry.traces_sample_rate' => null]);
+        $this->get('/')->assertOk()->assertSee('data-sentry-traces-sample-rate="0.01"', false);
     }
 }

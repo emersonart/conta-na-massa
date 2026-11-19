@@ -17,7 +17,7 @@
         data-sentry-dsn="{{ config('sentry.dsn') }}"
         data-sentry-environment="{{ config('sentry.environment') ?: config('app.env') }}"
         data-sentry-release="{{ config('sentry.release') }}"
-        data-sentry-traces-sample-rate="{{ config('sentry.traces_sample_rate', 0.01) }}"
+        data-sentry-traces-sample-rate="{{ config('sentry.traces_sample_rate') ?? 0.01 }}"
     ></div>
 </body>
 </html>

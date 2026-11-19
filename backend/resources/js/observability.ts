@@ -19,6 +19,11 @@ function safeUrl(value: string): string {
   }
 }
 
+function scrubSpanName(value: string): string {
+  const withoutQueryOrHash = value.split(/[?#]/, 1)[0];
+  return withoutQueryOrHash.replace(/\/(reset-password|confirm-email-change)\/[^/]+/gi, '/$1/[redacted]');
+}
+
 function scrubEvent<T extends Event>(event: T): T {
   if (event.transaction) {
     event.transaction = event.transaction.replace(/\/(reset-password|confirm-email-change)\/[^/?]+/gi, '/$1/[redacted]');
@@ -42,7 +47,7 @@ export function initializeTelemetry(): Promise<SentryModule | null> {
   // Do not load the browser SDK at all when no DSN is configured.
   if (!dsn) return Promise.resolve(null);
 
-  const tracesSampleRate = Number(root?.dataset.sentryTracesSampleRate ?? '0.01');
+  const tracesSampleRate = Number(root?.dataset.sentryTracesSampleRate?.trim() || '0.01');
 
   return import('@sentry/react').then((sdk) => {
     sentry = sdk;
@@ -54,7 +59,19 @@ export function initializeTelemetry(): Promise<SentryModule | null> {
       tracePropagationTargets: [`${window.location.origin}/api/v1/`],
       integrations: [sdk.browserTracingIntegration()],
       beforeSend: scrubEvent,
-      beforeSendTransaction: scrubEvent,
+      beforeSendSpan: (span) => {
+        if (span.is_segment) span.name = scrubSpanName(span.name);
+
+        for (const [key, value] of Object.entries(span.attributes)) {
+          if (/authorization|cookie|token|password|request\.body|response\.body/i.test(key)) {
+            delete span.attributes[key];
+          } else if (typeof value === 'string' && /(^|[._])url($|[._])/i.test(key)) {
+            span.attributes[key] = safeUrl(value);
+          }
+        }
+
+        return span;
+      },
     });
     return sdk;
   });

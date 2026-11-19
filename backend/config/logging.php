@@ -54,7 +54,12 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+            // Add remote structured logs only when a DSN is configured; the local
+            // single-file logger remains active in either case.
+            'channels' => explode(',', (string) env(
+                'LOG_STACK',
+                trim((string) env('SENTRY_LARAVEL_DSN', '')) !== '' ? 'single,sentry_logs' : 'single',
+            )),
             'ignore_exceptions' => false,
         ],
 

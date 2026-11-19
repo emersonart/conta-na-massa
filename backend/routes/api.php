@@ -34,7 +34,7 @@ Route::prefix('auth')->group(function () {
 });
 
 // Protected Endpoints (Requires Sanctum Bearer Token / Session)
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'sentry.user'])->group(function () {
     // Current User Profile & Logout
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);

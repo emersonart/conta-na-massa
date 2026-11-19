@@ -85,7 +85,20 @@ function flushQueue(): void {
   }
 }
 
+function setUmamiDisabledFlag(disabled: boolean): void {
+  try {
+    if (disabled) {
+      window.localStorage.setItem('umami.disabled', '1');
+    } else {
+      window.localStorage.removeItem('umami.disabled');
+    }
+  } catch {
+    // Ignore storage errors in restricted browsing modes.
+  }
+}
+
 function removeUmamiScript(): void {
+  setUmamiDisabledFlag(true);
   const existing = document.getElementById(UMAMI_SCRIPT_ELEMENT_ID);
   if (existing) {
     existing.remove();
@@ -98,6 +111,8 @@ export function syncUmamiWithConsent(): void {
     removeUmamiScript();
     return;
   }
+
+  setUmamiDisabledFlag(false);
 
   const config = readUmamiConfig();
   if (!config.websiteId || !isValidScriptUrl(config.scriptUrl)) {

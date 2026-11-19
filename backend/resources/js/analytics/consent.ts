@@ -9,22 +9,26 @@ export interface CookieConsentState {
   updatedAt: string;
 }
 
+let inMemoryConsent: CookieConsentState | null = null;
+
 export function readCookieConsent(): CookieConsentState | null {
   try {
     const raw = window.localStorage.getItem(CONSENT_STORAGE_KEY);
-    if (!raw) return null;
+    if (!raw) return inMemoryConsent;
     const parsed = JSON.parse(raw) as Partial<CookieConsentState>;
     if (parsed.version !== 1 || typeof parsed.analytics !== 'boolean') {
-      return null;
+      return inMemoryConsent;
     }
-    return {
+    const state: CookieConsentState = {
       version: 1,
       essential: true,
       analytics: parsed.analytics,
       updatedAt: typeof parsed.updatedAt === 'string' ? parsed.updatedAt : new Date().toISOString(),
     };
+    inMemoryConsent = state;
+    return state;
   } catch {
-    return null;
+    return inMemoryConsent;
   }
 }
 
@@ -36,10 +40,12 @@ export function saveCookieConsent(analytics: boolean): CookieConsentState {
     updatedAt: new Date().toISOString(),
   };
 
+  inMemoryConsent = next;
+
   try {
     window.localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(next));
   } catch {
-    // Ignore storage quota/private-mode errors and still emit runtime state.
+    // Ignore storage quota/private-mode errors and rely on in-memory fallback for this session.
   }
 
   window.dispatchEvent(new CustomEvent<CookieConsentState>(CONSENT_CHANGED_EVENT, { detail: next }));

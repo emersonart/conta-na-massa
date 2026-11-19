@@ -42,7 +42,7 @@ export const RecipeDetailPage: React.FC = () => {
   if (!recipe) {
     return (
       <div className="p-12 text-center space-y-3">
-        <p className="text-slate-500 font-medium">Receita não encontrada</p>
+        <p className="text-[#495057] font-medium">Receita não encontrada</p>
         <Button variant="outline" size="sm" onClick={() => navigate('/recipes')}>
           Voltar para Receitas
         </Button>
@@ -92,15 +92,15 @@ export const RecipeDetailPage: React.FC = () => {
       </div>
 
       {/* Main Recipe Summary Surface */}
-      <div className="bg-white rounded-2xl border border-[#E5DDD0] shadow-soft p-6 sm:p-7 space-y-5">
+      <div className="bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] p-4 sm:p-6 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-5">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Badge variant="sage" size="md">
                 Margem +{fin?.profit_margin_pct.toFixed(0)}%
               </Badge>
-              <span className="text-xs text-slate-500 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <span className="text-xs text-[#495057] flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-[#495057]" />
                 {recipe.prep_time_minutes} min de preparo
               </span>
             </div>
@@ -110,7 +110,7 @@ export const RecipeDetailPage: React.FC = () => {
             </h1>
 
             {recipe.description && (
-              <p className="text-sm text-slate-600 max-w-2xl leading-relaxed">
+              <p className="text-sm text-[#495057] max-w-2xl leading-relaxed">
                 {recipe.description}
               </p>
             )}
@@ -118,13 +118,13 @@ export const RecipeDetailPage: React.FC = () => {
 
           {/* Pricing Highlight Block */}
           <div className="text-left sm:text-right shrink-0 bg-[#FDFBF7] p-4 rounded-xl border border-[#E5DDD0]/80">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#E85D04] block">
+            <span className="text-[11px] font-bold text-[#E85D04] block">
               Preço Sugerido Total
             </span>
             <p className="text-3xl font-extrabold text-[#E85D04] tabular-nums font-heading mt-0.5">
               R$ {scaledSellingPrice.toFixed(2)}
             </p>
-            <span className="text-xs font-semibold text-slate-600 block mt-1 tabular-nums">
+            <span className="text-xs font-semibold text-[#495057] block mt-1 tabular-nums">
               R$ {(fin?.price_per_portion_brl || 0).toFixed(2)} por{' '}
               {recipe.yield_unit.replace(/s$/, '')}
             </span>
@@ -133,7 +133,7 @@ export const RecipeDetailPage: React.FC = () => {
 
         {/* Multiplier / Batch Scaler Tool */}
         <div className="pt-4 border-t border-[#E5DDD0]/70 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm print:hidden">
-          <span className="font-semibold text-slate-700 flex items-center gap-2">
+          <span className="font-semibold text-[#343A40] flex items-center gap-2">
             <Layers className="w-4 h-4 text-[#E85D04]" /> Multiplicador de Produção (Escalar Fornada):
           </span>
 
@@ -145,7 +145,7 @@ export const RecipeDetailPage: React.FC = () => {
                 className={`px-3 py-1 rounded-lg font-bold transition-colors cursor-pointer tabular-nums ${
                   multiplier === m
                     ? 'bg-[#E85D04] text-white shadow-2xs'
-                    : 'text-slate-700 hover:bg-white/60'
+                    : 'text-[#343A40] hover:bg-white/60'
                 }`}
               >
                 {m}x
@@ -159,12 +159,12 @@ export const RecipeDetailPage: React.FC = () => {
       {fin && <CostBreakdownChart financials={fin} />}
 
       {/* Ingredients Breakdown Table (Single Surface, Zero nesting) */}
-      <div className="bg-white rounded-2xl border border-[#E5DDD0] shadow-soft overflow-hidden">
+      <div className="bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-[#E5DDD0] flex items-center justify-between bg-[#FDFBF7]">
           <h2 className="text-base font-bold font-heading text-[#212529] flex items-center gap-2">
             <Scale className="w-4 h-4 text-[#E85D04]" /> Ficha Técnica dos Insumos
           </h2>
-          <span className="text-xs font-semibold text-slate-500 tabular-nums">
+          <span className="text-xs font-semibold text-[#495057] tabular-nums">
             Rendimento: <strong>{scaledYield} {recipe.yield_unit}</strong>{' '}
             {multiplier > 1 && `(${multiplier}x fornada)`}
           </span>
@@ -173,7 +173,7 @@ export const RecipeDetailPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-[#E5DDD0] text-slate-500 text-xs font-semibold uppercase tracking-wider">
+              <tr className="border-b border-[#E5DDD0] text-[#495057] text-xs font-semibold">
                 <th className="py-3 px-5">Insumo</th>
                 <th className="py-3 px-4 text-right">Quantidade</th>
                 <th className="py-3 px-4 text-right">Custo Unitário</th>
@@ -197,10 +197,10 @@ export const RecipeDetailPage: React.FC = () => {
                     <td className="py-3 px-5 font-semibold text-[#212529]">
                       {item.name}
                     </td>
-                    <td className="py-3 px-4 text-right font-medium text-slate-700 tabular-nums">
+                    <td className="py-3 px-4 text-right font-medium text-[#343A40] tabular-nums">
                       {displayQty}
                     </td>
-                    <td className="py-3 px-4 text-right text-slate-500 tabular-nums text-xs">
+                    <td className="py-3 px-4 text-right text-[#495057] tabular-nums text-xs">
                       R$ {item.cost_per_unit_brl < 0.01 ? item.cost_per_unit_brl.toFixed(4) : item.cost_per_unit_brl.toFixed(2)} / {item.unit}
                     </td>
                     <td className="py-3 px-5 text-right font-bold text-[#2D6A4F] tabular-nums">
@@ -212,7 +212,7 @@ export const RecipeDetailPage: React.FC = () => {
             </tbody>
             <tfoot>
               <tr className="border-t border-[#E5DDD0] bg-[#FDFBF7] font-bold">
-                <td colSpan={3} className="py-3.5 px-5 text-slate-700">
+                <td colSpan={3} className="py-3.5 px-5 text-[#343A40]">
                   Subtotal dos Ingredientes
                 </td>
                 <td className="py-3.5 px-5 text-right text-base text-[#E85D04] tabular-nums font-heading">
@@ -232,7 +232,7 @@ export const RecipeDetailPage: React.FC = () => {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-5 bg-white rounded-2xl border border-emerald-300 shadow-soft flex flex-col justify-between space-y-3">
+            <div className="p-5 bg-[#FDFBF7] rounded-xl border border-emerald-300 shadow-soft flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-xs uppercase text-[#2D6A4F] flex items-center gap-1.5">
                   <ShoppingBag className="w-4 h-4" /> Balcão / Direto
@@ -242,15 +242,15 @@ export const RecipeDetailPage: React.FC = () => {
                 </Badge>
               </div>
               <div>
-                <span className="text-xs text-slate-500">Preço Sugerido</span>
+                <span className="text-xs text-[#495057]">Preço Sugerido</span>
                 <p className="text-2xl font-black text-[#2D6A4F] tabular-nums font-heading mt-0.5">
                   R$ {(fin.scenarios.direct_sale * multiplier).toFixed(2)}
                 </p>
-                <p className="text-xs text-slate-600 mt-1">Margem líquida máxima sem taxas.</p>
+                <p className="text-xs text-[#495057] mt-1">Margem líquida máxima sem taxas.</p>
               </div>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-amber-300 shadow-soft flex flex-col justify-between space-y-3">
+            <div className="p-5 bg-[#FDFBF7] rounded-xl border border-amber-300 shadow-soft flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-xs uppercase text-amber-800 flex items-center gap-1.5">
                   <Truck className="w-4 h-4" /> Delivery (+15%)
@@ -260,17 +260,17 @@ export const RecipeDetailPage: React.FC = () => {
                 </Badge>
               </div>
               <div>
-                <span className="text-xs text-slate-500">Preço Recomendado</span>
+                <span className="text-xs text-[#495057]">Preço Recomendado</span>
                 <p className="text-2xl font-black text-amber-900 tabular-nums font-heading mt-0.5">
                   R$ {(fin.scenarios.delivery_app_15pct * multiplier).toFixed(2)}
                 </p>
-                <p className="text-xs text-slate-600 mt-1">Cobre comissão mantendo o lucro.</p>
+                <p className="text-xs text-[#495057] mt-1">Cobre comissão mantendo o lucro.</p>
               </div>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-slate-300 shadow-soft flex flex-col justify-between space-y-3">
+            <div className="p-5 bg-[#FDFBF7] rounded-xl border border-slate-300 shadow-soft flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-xs uppercase text-slate-700 flex items-center gap-1.5">
+                <span className="font-bold text-xs uppercase text-[#343A40] flex items-center gap-1.5">
                   <DollarSign className="w-4 h-4" /> Atacado / Revenda
                 </span>
                 <Badge variant="charcoal" size="sm">
@@ -278,11 +278,11 @@ export const RecipeDetailPage: React.FC = () => {
                 </Badge>
               </div>
               <div>
-                <span className="text-xs text-slate-500">Preço Mínimo</span>
-                <p className="text-2xl font-black text-slate-800 tabular-nums font-heading mt-0.5">
+                <span className="text-xs text-[#495057]">Preço Mínimo</span>
+                <p className="text-2xl font-black text-[#212529] tabular-nums font-heading mt-0.5">
                   R$ {(fin.scenarios.wholesale * multiplier).toFixed(2)}
                 </p>
-                <p className="text-xs text-slate-600 mt-1">Compensado pelo volume pedido.</p>
+                <p className="text-xs text-[#495057] mt-1">Compensado pelo volume pedido.</p>
               </div>
             </div>
           </div>

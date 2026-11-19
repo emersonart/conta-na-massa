@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { apiClient } from '../api/client';
 import type { Recipe } from '../types';
+import { trackEvent } from '../analytics/umami';
 
 interface RecipeState {
   recipes: Recipe[];
@@ -42,6 +43,9 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
       const response = await apiClient.get(`/recipes/${id}`);
       const recipe = response.data.data;
       set({ currentRecipe: recipe, isLoading: false });
+      trackEvent('recipe_detail_viewed', {
+        items_count: Array.isArray(recipe?.items) ? recipe.items.length : 0,
+      });
       return recipe;
     } catch (err: any) {
       set({
@@ -61,6 +65,9 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
         recipes: [newRecipe, ...get().recipes],
         currentRecipe: newRecipe,
         isLoading: false,
+      });
+      trackEvent('recipe_created', {
+        items_count: Array.isArray(newRecipe?.items) ? newRecipe.items.length : 0,
       });
       return newRecipe;
     } catch (err: any) {
@@ -82,6 +89,9 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
         currentRecipe: updated,
         isLoading: false,
       });
+      trackEvent('recipe_updated', {
+        items_count: Array.isArray(updated?.items) ? updated.items.length : 0,
+      });
       return updated;
     } catch (err: any) {
       set({
@@ -101,6 +111,7 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
         currentRecipe: get().currentRecipe?.id === id ? null : get().currentRecipe,
         isLoading: false,
       });
+      trackEvent('recipe_deleted');
       return true;
     } catch (err: any) {
       set({

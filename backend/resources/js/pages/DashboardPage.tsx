@@ -54,14 +54,14 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Unified Key Metrics Strip (Single surface, divided, zero nested cards) */}
-      <div className="bg-white rounded-2xl border border-[#E5DDD0] shadow-soft overflow-hidden">
+      <div className="bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
         <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-[#E5DDD0]/70">
           {/* Metric 1 */}
           <div
             onClick={() => navigate('/recipes')}
             className="p-5 hover:bg-[#FDFBF7]/60 transition-colors cursor-pointer select-none"
           >
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+            <div className="flex items-center gap-2 text-[#495057] text-xs font-semibold">
               <BookOpen className="w-4 h-4 text-[#E85D04]" />
               <span>Receitas Cadastradas</span>
             </div>
@@ -69,7 +69,7 @@ export const DashboardPage: React.FC = () => {
               <span className="text-3xl font-extrabold font-heading text-[#212529] tabular-nums">
                 {totalRecipes}
               </span>
-              <span className="text-xs text-slate-400">fichas ativas</span>
+              <span className="text-xs text-[#495057]">fichas ativas</span>
             </div>
           </div>
 
@@ -78,7 +78,7 @@ export const DashboardPage: React.FC = () => {
             onClick={() => navigate('/ingredients')}
             className="p-5 hover:bg-[#FDFBF7]/60 transition-colors cursor-pointer select-none"
           >
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+            <div className="flex items-center gap-2 text-[#495057] text-xs font-semibold">
               <Wheat className="w-4 h-4 text-amber-600" />
               <span>Insumos na Despensa</span>
             </div>
@@ -86,7 +86,7 @@ export const DashboardPage: React.FC = () => {
               <span className="text-3xl font-extrabold font-heading text-[#212529] tabular-nums">
                 {totalIngredients}
               </span>
-              <span className="text-xs text-slate-400">itens com custo</span>
+              <span className="text-xs text-[#495057]">itens com custo</span>
             </div>
           </div>
 
@@ -95,7 +95,7 @@ export const DashboardPage: React.FC = () => {
             onClick={() => navigate('/settings')}
             className="p-5 hover:bg-[#FDFBF7]/60 transition-colors cursor-pointer select-none"
           >
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+            <div className="flex items-center gap-2 text-[#495057] text-xs font-semibold">
               <TrendingUp className="w-4 h-4 text-[#2D6A4F]" />
               <span>Margem Média Alvo</span>
             </div>
@@ -103,7 +103,7 @@ export const DashboardPage: React.FC = () => {
               <span className="text-3xl font-extrabold font-heading text-[#2D6A4F] tabular-nums">
                 +{avgProfit.toFixed(0)}%
               </span>
-              <span className="text-xs text-slate-400">sobre o custo</span>
+              <span className="text-xs text-[#495057]">sobre o custo</span>
             </div>
           </div>
 
@@ -112,15 +112,15 @@ export const DashboardPage: React.FC = () => {
             onClick={() => navigate('/settings')}
             className="p-5 hover:bg-[#FDFBF7]/60 transition-colors cursor-pointer select-none"
           >
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
-              <PieChart className="w-4 h-4 text-slate-500" />
+            <div className="flex items-center gap-2 text-[#495057] text-xs font-semibold">
+              <PieChart className="w-4 h-4 text-[#495057]" />
               <span>Taxa de Custos Fixos</span>
             </div>
             <div className="mt-2.5 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold font-heading text-slate-800 tabular-nums">
+              <span className="text-3xl font-extrabold font-heading text-[#212529] tabular-nums">
                 {settings.overhead_pct}%
               </span>
-              <span className="text-xs text-slate-400">gás, luz, aluguel</span>
+              <span className="text-xs text-[#495057]">gás, luz, aluguel</span>
             </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ export const DashboardPage: React.FC = () => {
             <h2 className="text-lg font-bold font-heading text-[#212529]">
               Fichas Técnicas Recentes
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[#495057]">
               Custos apurados por porção e preços de venda calculados.
             </p>
           </div>
@@ -147,7 +147,7 @@ export const DashboardPage: React.FC = () => {
           </Button>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5DDD0] shadow-soft overflow-hidden">
+        <div className="bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
           {recipes.length === 0 ? (
             <div className="text-center py-16 px-4 space-y-3">
               <div className="w-12 h-12 rounded-xl bg-orange-50 text-[#E85D04] flex items-center justify-center mx-auto">
@@ -157,7 +157,7 @@ export const DashboardPage: React.FC = () => {
                 <h3 className="font-bold text-[#212529] font-heading">
                   Nenhuma ficha técnica cadastrada
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#495057] mt-1">
                   Cadastre ingredientes na despensa para calcular custos por fatia e margens de venda.
                 </p>
               </div>
@@ -183,7 +183,7 @@ export const DashboardPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                  <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-[#495057] text-xs font-semibold">
                     <th className="py-3.5 px-5">Receita</th>
                     <th className="py-3.5 px-4">Rendimento & Tempo</th>
                     <th className="py-3.5 px-4 text-right">Custo de Produção</th>
@@ -213,24 +213,24 @@ export const DashboardPage: React.FC = () => {
                             {recipe.name}
                           </span>
                           {recipe.description && (
-                            <span className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                            <span className="text-xs text-[#495057] line-clamp-1 mt-0.5">
                               {recipe.description}
                             </span>
                           )}
                         </td>
-                        <td className="py-3.5 px-4 text-slate-600 text-xs">
+                        <td className="py-3.5 px-4 text-[#495057] text-xs">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium text-slate-800">
+                            <span className="font-medium text-[#212529]">
                               {recipe.yield_quantity} {recipe.yield_unit}
                             </span>
                             <span>•</span>
-                            <span className="flex items-center gap-1 text-slate-500">
+                            <span className="flex items-center gap-1 text-[#495057]">
                               <Clock className="w-3.5 h-3.5" />
                               {recipe.prep_time_minutes} min
                             </span>
                           </div>
                         </td>
-                        <td className="py-3.5 px-4 text-right tabular-nums text-slate-700 font-medium">
+                        <td className="py-3.5 px-4 text-right tabular-nums text-[#343A40] font-medium">
                           R$ {costPrice.toFixed(2)}
                         </td>
                         <td className="py-3.5 px-4 text-right tabular-nums">
@@ -238,7 +238,7 @@ export const DashboardPage: React.FC = () => {
                             R$ {sellingPrice.toFixed(2)}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-right tabular-nums text-slate-600 font-medium text-xs">
+                        <td className="py-3.5 px-4 text-right tabular-nums text-[#495057] font-medium text-xs">
                           R$ {portionPrice.toFixed(2)} /{recipe.yield_unit.replace(/s$/, '')}
                         </td>
                         <td className="py-3.5 px-4 text-center">

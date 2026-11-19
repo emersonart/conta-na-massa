@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import { openCookiePreferences } from '../../analytics/consent';
 import { Button } from '../ui/Button';
 import { Logo } from '../ui/Logo';
 
@@ -176,6 +177,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <LogOut className="w-4 h-4" />
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              openCookiePreferences();
+              onClose();
+            }}
+            className="mt-1 w-full px-2 py-1 text-left text-[11px] text-slate-500 hover:text-[#2D6A4F] transition-colors cursor-pointer"
+          >
+            Privacidade e cookies (LGPD)
+          </button>
         </div>
       </aside>
     </>

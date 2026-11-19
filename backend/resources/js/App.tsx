@@ -15,7 +15,9 @@ import { VibeChatPage } from './pages/VibeChatPage';
 import { AccountPage } from './pages/AccountPage';
 import { PasswordRecoveryPage } from './pages/PasswordRecoveryPage';
 import { ConfirmEmailChangePage } from './pages/ConfirmEmailChangePage';
+import { CookieConsentBanner } from './components/privacy/CookieConsentBanner';
 import { setTelemetryUser } from './observability';
+import { identifyAnalyticsUser } from './analytics/umami';
 
 function AppContent() {
   const { checkAuth, clearSession, user, token, isCheckingAuth } = useAuthStore();
@@ -41,6 +43,7 @@ function AppContent() {
   useEffect(() => {
     // Use an opaque account ID only; never send name, e-mail, or auth token.
     setTelemetryUser(user?.id);
+    identifyAnalyticsUser(user?.id);
   }, [user?.id]);
 
   if (isCheckingAuth) {
@@ -105,7 +108,12 @@ function AppContent() {
 }
 
 export function App() {
-  return <AppContent />;
+  return (
+    <>
+      <AppContent />
+      <CookieConsentBanner />
+    </>
+  );
 }
 
 export default App;

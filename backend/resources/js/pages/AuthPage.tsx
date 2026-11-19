@@ -46,18 +46,18 @@ export const AuthPage: React.FC = () => {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="border border-[#E5DDD0]">
+        <Card className="bg-white border border-[#E5DDD0] shadow-soft rounded-2xl" variant="elevated">
           {/* Toggle Tabs */}
-          <div className="flex bg-[#F0EAE1]/80 p-1 rounded-xl mb-6 border border-[#E5DDD0]/60">
+          <div className="flex bg-[#F0EAE1]/80 p-1 rounded-xl mb-6 border border-[#E5DDD0]/70">
             <button
               type="button"
               onClick={() => {
                 setIsRegister(false);
                 clearError();
               }}
-              className={`flex-1 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 !isRegister
-                  ? 'bg-white text-[#212529] shadow-xs'
+                  ? 'bg-white text-[#212529] shadow-warm'
                   : 'text-[#495057] hover:text-[#212529]'
               }`}
             >
@@ -69,9 +69,9 @@ export const AuthPage: React.FC = () => {
                 setIsRegister(true);
                 clearError();
               }}
-              className={`flex-1 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+              className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 isRegister
-                  ? 'bg-white text-[#212529] shadow-xs'
+                  ? 'bg-white text-[#212529] shadow-warm'
                   : 'text-[#495057] hover:text-[#212529]'
               }`}
             >

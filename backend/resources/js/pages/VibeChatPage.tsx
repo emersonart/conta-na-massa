@@ -85,22 +85,22 @@ export const VibeChatPage: React.FC = () => {
       <div
         className={`
         fixed md:static inset-y-0 left-0 z-50 md:z-auto
-        w-64 bg-[#FDFBF7] md:bg-[#FDFBF7] rounded-xl border border-[#E5DDD0]
-        transform transition-transform duration-300 ease-in-out flex flex-col shadow-soft md:shadow-none
+        w-68 bg-white md:bg-white rounded-2xl border border-[#E5DDD0]
+        transform transition-transform duration-300 ease-in-out flex flex-col shadow-warm md:shadow-warm
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}
       >
         <div className="p-4 flex items-center justify-between md:hidden border-b border-[#E5DDD0]">
-          <span className="font-bold font-heading text-[#212529]">Histórico de Conversas</span>
+          <span className="font-bold font-heading text-[#212529]">Histórico de Consultas</span>
           <button onClick={() => setIsSidebarOpen(false)} className="text-[#495057] p-1">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-3">
+        <div className="p-3.5">
           <Button
             variant="primary"
-            className="w-full justify-center shadow-xs"
+            className="w-full justify-center shadow-warm"
             onClick={() => {
               startNewSession();
               setIsSidebarOpen(false);
@@ -112,11 +112,11 @@ export const VibeChatPage: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto px-2 space-y-1 pb-4">
-          <div className="text-[11px] font-bold text-[#495057] px-2 py-1.5 mt-1">
+          <div className="text-[10px] font-bold text-slate-400 px-3 py-1.5 mt-1 font-heading uppercase tracking-wider">
             Conversas Anteriores
           </div>
           {sessions.length === 0 && (
-            <div className="text-xs text-[#495057] px-2 italic">Nenhum histórico recente.</div>
+            <div className="text-xs text-[#495057] px-3 py-2 italic">Nenhum histórico recente.</div>
           )}
           {sessions.map((session) => (
             <button
@@ -125,16 +125,16 @@ export const VibeChatPage: React.FC = () => {
                 loadSession(session.session_id);
                 setIsSidebarOpen(false);
               }}
-              className={`w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm transition-colors flex items-center gap-2 truncate cursor-pointer ${
+              className={`w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm transition-all flex items-center gap-2 truncate cursor-pointer ${
                 sessionId === session.session_id
-                  ? 'bg-[#F0EAE1]/60 text-[#E85D04] font-semibold'
-                  : 'text-[#495057] hover:bg-slate-100/60'
+                  ? 'bg-[#FFF4ED] text-[#E85D04] font-semibold border-l-2 border-[#E85D04]'
+                  : 'text-[#495057] hover:bg-[#F8F6F0] hover:text-[#212529]'
               }`}
               title={session.title}
             >
               <MessageSquare
                 className={`w-3.5 h-3.5 shrink-0 ${
-                  sessionId === session.session_id ? 'text-[#E85D04]' : 'text-[#495057]'
+                  sessionId === session.session_id ? 'text-[#E85D04]' : 'text-slate-400'
                 }`}
               />
               <span className="truncate block leading-tight">{session.title}</span>
@@ -144,18 +144,18 @@ export const VibeChatPage: React.FC = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#FDFBF7] rounded-2xl border border-[#E5DDD0] overflow-hidden shadow-warm">
         {/* Top Bar */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5DDD0] bg-[#FDFBF7] gap-2 shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[#E5DDD0] bg-white gap-2 shrink-0">
           <div className="flex items-center gap-3">
             <button
-              className="md:hidden p-1.5 -ml-1 text-[#495057] hover:bg-slate-100 rounded-lg"
+              className="md:hidden p-1.5 -ml-1 text-[#495057] hover:bg-slate-100 rounded-lg cursor-pointer"
               onClick={() => setIsSidebarOpen(true)}
               aria-label="Abrir histórico"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div className="w-9 h-9 rounded-xl bg-[#2D6A4F] flex items-center justify-center text-white shadow-xs shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-[#2D6A4F] flex items-center justify-center text-white shadow-2xs shrink-0">
               <ChefHat className="w-5 h-5" />
             </div>
             <div className="min-w-0">
@@ -200,20 +200,20 @@ export const VibeChatPage: React.FC = () => {
 
               {/* Quick Action Chips */}
               <div className="w-full space-y-2 text-left pt-2">
-                <span className="text-xs font-semibold text-[#495057] flex items-center gap-1.5">
-                  Sugestões de perguntas
+                <span className="text-xs font-semibold text-[#495057] flex items-center gap-1.5 font-heading uppercase tracking-wider">
+                  Sugestões práticas de cálculo
                 </span>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {promptChips.map((chip, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleChipClick(chip.text)}
-                      className="p-3 rounded-xl bg-[#FDFBF7] border border-[#E5DDD0] text-left text-xs hover:border-[#E85D04] transition-all cursor-pointer shadow-2xs group"
+                      className="p-3.5 rounded-2xl bg-white border border-[#E5DDD0] text-left text-xs hover:border-[#E85D04]/70 hover:bg-[#FFF4ED]/40 transition-all cursor-pointer shadow-warm group"
                     >
-                      <span className="font-bold text-[#212529] block group-hover:text-[#E85D04] transition-colors">
+                      <span className="font-bold text-[#212529] block group-hover:text-[#E85D04] transition-colors font-heading text-sm">
                         {chip.title}
                       </span>
-                      <span className="text-[#495057] line-clamp-1 mt-0.5">{chip.text}</span>
+                      <span className="text-[#495057] line-clamp-2 mt-1 leading-relaxed">{chip.text}</span>
                     </button>
                   ))}
                 </div>
@@ -240,12 +240,12 @@ export const VibeChatPage: React.FC = () => {
                   )}
 
                   <div
-                    className={`max-w-[88%] sm:max-w-[78%] p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-soft ${
+                    className={`max-w-[88%] sm:max-w-[78%] p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-warm ${
                       isUser
                         ? 'bg-[#E85D04] text-white rounded-tr-xs'
                         : msg.is_flagged
                         ? 'bg-rose-50 border border-rose-200 text-rose-900 rounded-tl-xs'
-                        : 'bg-[#FDFBF7] border border-[#E5DDD0] text-[#212529] rounded-tl-xs'
+                        : 'bg-white border border-[#E5DDD0] text-[#212529] rounded-tl-xs'
                     }`}
                   >
                     {msg.is_flagged && (

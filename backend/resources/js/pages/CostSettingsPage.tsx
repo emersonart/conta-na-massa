@@ -85,10 +85,10 @@ export const CostSettingsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Form Card */}
-        <Card className="lg:col-span-2 space-y-6">
+        <Card className="lg:col-span-2 space-y-6 bg-white shadow-warm" variant="elevated">
           {saveSuccess && (
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-[#2D6A4F] text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn">
-              <CheckCircle2 className="w-5 h-5 shrink-0" />
+            <div className="p-4 rounded-xl bg-[#D8F3DC]/80 border border-[#74C69D]/40 text-[#1B4332] text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn">
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-[#2D6A4F]" />
               <span>Configurações financeiras salvas com sucesso! Todas as receitas foram recalculadas.</span>
             </div>
           )}
@@ -100,7 +100,7 @@ export const CostSettingsPage: React.FC = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <Input
               label="Custos Fixos / Overhead (%)"
               type="number"
@@ -141,7 +141,7 @@ export const CostSettingsPage: React.FC = () => {
               required
             />
 
-            <div className="pt-3">
+            <div className="pt-2">
               <Button
                 type="submit"
                 variant="primary"
@@ -158,19 +158,19 @@ export const CostSettingsPage: React.FC = () => {
 
         {/* Live Simulator Preview */}
         <div className="space-y-4">
-          <Card className="bg-[#FDFBF7] border border-[#E5DDD0] p-5 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#E85D04] font-heading">
+          <Card className="bg-[#FDFBF7] border border-[#E5DDD0] p-5 space-y-4 shadow-warm" variant="default">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#E85D04] font-heading uppercase tracking-wider">
               <Calculator className="w-4 h-4" /> Simulador em Tempo Real
             </div>
 
-            <p className="text-xs text-[#495057]">
-              Exemplo de um bolo com <strong className="text-[#212529]">R$ 25,00 em ingredientes</strong> e{' '}
+            <p className="text-xs text-[#495057] leading-relaxed">
+              Exemplo de um bolo com <strong className="text-[#212529]">R$ 25,00 em insumos</strong> e{' '}
               <strong className="text-[#212529]">1 hora de preparo</strong>:
             </p>
 
-            <div className="space-y-2.5 text-xs text-[#495057] divide-y divide-[#E5DDD0]">
+            <div className="space-y-2.5 text-xs text-[#495057] divide-y divide-[#E5DDD0]/70">
               <div className="flex justify-between pt-1">
-                <span>Ingredientes:</span>
+                <span>Insumos:</span>
                 <span className="font-semibold text-[#212529] tabular-nums">R$ 25,00</span>
               </div>
               <div className="flex justify-between pt-1">
@@ -181,32 +181,32 @@ export const CostSettingsPage: React.FC = () => {
                 <span>Overhead ({overheadPct}%):</span>
                 <span className="font-semibold text-[#212529] tabular-nums">R$ {simOverheadVal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between pt-1 font-bold text-[#212529]">
+              <div className="flex justify-between pt-1.5 font-bold text-[#212529]">
                 <span>Custo Real de Produção:</span>
                 <span className="tabular-nums">R$ {simTotalCost.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between pt-1 text-[#2D6A4F] font-bold">
+              <div className="flex justify-between pt-1.5 text-[#1B4332] font-bold">
                 <span>Lucro Líquido (+{profitMarginPct}%):</span>
                 <span className="tabular-nums">+ R$ {simProfitVal.toFixed(2)}</span>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-orange-50 border border-orange-200 text-center">
-              <span className="text-[10px] font-bold text-[#E85D04] block">
+            <div className="p-4 rounded-xl bg-[#FFF4ED] border border-[#FFE5D4] text-center shadow-2xs">
+              <span className="text-[10px] font-bold text-[#E85D04] uppercase tracking-wider block font-heading">
                 Preço de Venda Resultante
               </span>
-              <p className="text-2xl font-black text-[#E85D04] tabular-nums font-heading mt-0.5">
+              <p className="text-3xl font-black text-[#E85D04] tabular-nums font-heading mt-1">
                 R$ {simFinalPrice.toFixed(2)}
               </p>
             </div>
           </Card>
 
-          <Card className="p-4 bg-white border border-[#E5DDD0] text-xs text-[#495057] space-y-2">
-            <span className="font-bold text-[#343A40] flex items-center gap-1.5">
-              <Info className="w-3.5 h-3.5 text-[#2D6A4F]" /> Dica de Gestão
+          <Card className="p-4 bg-white border border-[#E5DDD0] text-xs text-[#495057] space-y-2 shadow-2xs" variant="flat">
+            <span className="font-bold text-[#343A40] flex items-center gap-1.5 font-heading">
+              <Info className="w-3.5 h-3.5 text-[#2D6A4F]" /> Dica de Gestão Gastronômica
             </span>
-            <p>
-              Evite a regra genérica de multiplicar ingredientes por 3. Sem mensurar tempo de preparo e despesas operacionais fixas, itens complexos geram margens ilusórias.
+            <p className="leading-relaxed">
+              Evite a regra amadora de apenas multiplicar os ingredientes por 3. Sem calcular tempo de preparo e custos fixos, receitas que demandam horas de trabalho geram prejuízo disfarçado.
             </p>
           </Card>
         </div>

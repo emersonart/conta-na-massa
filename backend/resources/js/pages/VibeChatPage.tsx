@@ -3,13 +3,11 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAiStore } from '../stores/aiStore';
 import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
 import {
   Send,
   Trash2,
   User as UserIcon,
   AlertTriangle,
-  Lightbulb,
   CheckCircle2,
   Menu,
   Plus,
@@ -87,14 +85,14 @@ export const VibeChatPage: React.FC = () => {
       <div
         className={`
         fixed md:static inset-y-0 left-0 z-50 md:z-auto
-        w-64 bg-[#FDFBF7] md:bg-white rounded-2xl border border-[#E5DDD0]
+        w-64 bg-[#FDFBF7] md:bg-[#FDFBF7] rounded-xl border border-[#E5DDD0]
         transform transition-transform duration-300 ease-in-out flex flex-col shadow-soft md:shadow-none
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}
       >
         <div className="p-4 flex items-center justify-between md:hidden border-b border-[#E5DDD0]">
           <span className="font-bold font-heading text-[#212529]">Histórico de Conversas</span>
-          <button onClick={() => setIsSidebarOpen(false)} className="text-slate-500 p-1">
+          <button onClick={() => setIsSidebarOpen(false)} className="text-[#495057] p-1">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -114,11 +112,11 @@ export const VibeChatPage: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto px-2 space-y-1 pb-4">
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1.5 mt-1">
+          <div className="text-[11px] font-bold text-[#495057] px-2 py-1.5 mt-1">
             Conversas Anteriores
           </div>
           {sessions.length === 0 && (
-            <div className="text-xs text-slate-400 px-2 italic">Nenhum histórico recente.</div>
+            <div className="text-xs text-[#495057] px-2 italic">Nenhum histórico recente.</div>
           )}
           {sessions.map((session) => (
             <button
@@ -129,14 +127,14 @@ export const VibeChatPage: React.FC = () => {
               }}
               className={`w-full text-left px-3 py-2.5 rounded-xl text-xs sm:text-sm transition-colors flex items-center gap-2 truncate cursor-pointer ${
                 sessionId === session.session_id
-                  ? 'bg-orange-100/60 text-[#E85D04] font-semibold'
-                  : 'text-slate-600 hover:bg-slate-100/60'
+                  ? 'bg-[#F0EAE1]/60 text-[#E85D04] font-semibold'
+                  : 'text-[#495057] hover:bg-slate-100/60'
               }`}
               title={session.title}
             >
               <MessageSquare
                 className={`w-3.5 h-3.5 shrink-0 ${
-                  sessionId === session.session_id ? 'text-[#E85D04]' : 'text-slate-400'
+                  sessionId === session.session_id ? 'text-[#E85D04]' : 'text-[#495057]'
                 }`}
               />
               <span className="truncate block leading-tight">{session.title}</span>
@@ -146,18 +144,18 @@ export const VibeChatPage: React.FC = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-white rounded-2xl border border-[#E5DDD0] shadow-soft overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
         {/* Top Bar */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5DDD0] bg-[#FDFBF7] gap-2 shrink-0">
           <div className="flex items-center gap-3">
             <button
-              className="md:hidden p-1.5 -ml-1 text-slate-500 hover:bg-slate-100 rounded-lg"
+              className="md:hidden p-1.5 -ml-1 text-[#495057] hover:bg-slate-100 rounded-lg"
               onClick={() => setIsSidebarOpen(true)}
               aria-label="Abrir histórico"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#E85D04] to-[#F4A261] flex items-center justify-center text-white shadow-xs shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-[#2D6A4F] flex items-center justify-center text-white shadow-xs shrink-0">
               <ChefHat className="w-5 h-5" />
             </div>
             <div className="min-w-0">
@@ -165,11 +163,8 @@ export const VibeChatPage: React.FC = () => {
                 <h2 className="text-sm sm:text-base font-bold font-heading text-[#212529] leading-tight truncate">
                   Assistente de Fichas & Custos
                 </h2>
-                <Badge variant="sage" size="sm" className="hidden sm:inline-flex">
-                  Disponível
-                </Badge>
               </div>
-              <span className="text-[11px] text-slate-500 block leading-tight">
+              <span className="text-[11px] text-[#495057] block leading-tight">
                 Cálculo de rendimento, conversão de unidades e fichas técnicas
               </span>
             </div>
@@ -180,7 +175,7 @@ export const VibeChatPage: React.FC = () => {
               variant="ghost"
               size="sm"
               onClick={() => clearHistory()}
-              className="text-slate-400 hover:text-rose-600 px-2"
+              className="text-[#495057] hover:text-rose-600 px-2"
               title="Limpar Conversa Atual"
               leftIcon={<Trash2 className="w-4 h-4" />}
             />
@@ -190,23 +185,23 @@ export const VibeChatPage: React.FC = () => {
         {/* Messages Scroll Area */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
           {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto py-8 space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-100 text-[#E85D04] flex items-center justify-center">
+            <div className="min-h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto py-8 space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#F0EAE1] text-[#E85D04] flex items-center justify-center">
                 <ChefHat className="w-6 h-6" />
               </div>
               <div className="space-y-1">
                 <h3 className="text-lg font-bold font-heading text-[#212529]">
-                  Como posso ajudar na sua produção hoje?
+                  O que você quer calcular?
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                  Informe insumos comprados para cadastrar na despensa, solicite a estruturação de uma nova ficha técnica ou tire dúvidas de custos.
+                <p className="text-xs sm:text-sm text-[#495057] leading-relaxed">
+                  Descreva uma compra para atualizar a despensa ou informe os ingredientes e o rendimento da receita.
                 </p>
               </div>
 
               {/* Quick Action Chips */}
               <div className="w-full space-y-2 text-left pt-2">
-                <span className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
-                  <Lightbulb className="w-3.5 h-3.5 text-amber-500" /> Exemplos práticos:
+                <span className="text-xs font-semibold text-[#495057] flex items-center gap-1.5">
+                  Sugestões de perguntas
                 </span>
                 <div className="grid grid-cols-1 gap-2">
                   {promptChips.map((chip, idx) => (
@@ -218,7 +213,7 @@ export const VibeChatPage: React.FC = () => {
                       <span className="font-bold text-[#212529] block group-hover:text-[#E85D04] transition-colors">
                         {chip.title}
                       </span>
-                      <span className="text-slate-600 line-clamp-1 mt-0.5">{chip.text}</span>
+                      <span className="text-[#495057] line-clamp-1 mt-0.5">{chip.text}</span>
                     </button>
                   ))}
                 </div>
@@ -239,7 +234,7 @@ export const VibeChatPage: React.FC = () => {
                   className={`flex gap-3 items-start ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#E85D04] to-[#F4A261] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-[#2D6A4F] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                       <ChefHat className="w-4 h-4" />
                     </div>
                   )}
@@ -352,7 +347,7 @@ export const VibeChatPage: React.FC = () => {
 
                     <span
                       className={`block text-[10px] mt-2 ${
-                        isUser ? 'text-orange-200 text-right' : 'text-slate-400'
+                        isUser ? 'text-orange-200 text-right' : 'text-[#495057]'
                       }`}
                     >
                       {msg.created_at
@@ -375,8 +370,8 @@ export const VibeChatPage: React.FC = () => {
           )}
 
           {isStreamingFirstToken && (
-            <div className="flex gap-3 items-center text-xs text-slate-500">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#E85D04] to-[#F4A261] text-white flex items-center justify-center">
+            <div className="flex gap-3 items-center text-xs text-[#495057]">
+              <div className="w-8 h-8 rounded-xl bg-[#2D6A4F] text-white flex items-center justify-center">
                 <ChefHat className="w-4 h-4" />
               </div>
               <div className="bg-[#FDFBF7] border border-[#E5DDD0] px-3.5 py-2.5 rounded-2xl rounded-tl-xs flex items-center gap-2 shadow-2xs">
@@ -398,7 +393,7 @@ export const VibeChatPage: React.FC = () => {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               disabled={isSendingMessage}
-              className="flex-1 min-h-[46px] rounded-xl border border-[#E5DDD0] bg-white px-4 py-2.5 text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-2 focus:ring-[#E85D04]/15 transition-all shadow-2xs"
+              className="flex-1 min-h-[46px] rounded-xl border border-[#E5DDD0] bg-white px-4 py-2.5 text-sm text-[#212529] placeholder:text-[#495057] focus:border-[#E85D04] focus:outline-none focus:ring-2 focus:ring-[#E85D04]/15 transition-all shadow-2xs"
             />
 
             <Button

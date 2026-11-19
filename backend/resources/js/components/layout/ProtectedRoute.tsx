@@ -12,7 +12,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (isCheckingAuth) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#F8F6F0]">
-        <div className="animate-spin text-[#E85D04] text-4xl">🥐</div>
+        <p role="status" className="text-sm text-[#495057]">Verificando acesso…</p>
       </div>
     );
   }

@@ -39,14 +39,14 @@ export const AuthPage: React.FC = () => {
           <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[#212529] tracking-tight">
             Conta na Massa
           </h1>
-          <p className="text-sm text-slate-600 max-w-sm mx-auto mt-1">
+          <p className="text-sm text-[#495057] max-w-sm mx-auto mt-1">
             Gestão de custos reais e precificação para sua confeitaria ou padaria.
           </p>
         </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="shadow-soft border border-[#E5DDD0]">
+        <Card className="border border-[#E5DDD0]">
           {/* Toggle Tabs */}
           <div className="flex bg-[#F0EAE1]/80 p-1 rounded-xl mb-6 border border-[#E5DDD0]/60">
             <button
@@ -58,7 +58,7 @@ export const AuthPage: React.FC = () => {
               className={`flex-1 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 !isRegister
                   ? 'bg-white text-[#212529] shadow-xs'
-                  : 'text-slate-600 hover:text-[#212529]'
+                  : 'text-[#495057] hover:text-[#212529]'
               }`}
             >
               Entrar
@@ -72,7 +72,7 @@ export const AuthPage: React.FC = () => {
               className={`flex-1 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 isRegister
                   ? 'bg-white text-[#212529] shadow-xs'
-                  : 'text-slate-600 hover:text-[#212529]'
+                  : 'text-[#495057] hover:text-[#212529]'
               }`}
             >
               Criar Conta

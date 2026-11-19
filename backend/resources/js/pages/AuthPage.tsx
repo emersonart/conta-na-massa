@@ -5,11 +5,12 @@ import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
 import { Logo } from '../components/ui/Logo';
 import { AlertCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export const AuthPage: React.FC = () => {
   const navigate = useNavigate();
-  const [isRegister, setIsRegister] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const isRegister = params.get('mode') === 'register';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,7 +53,7 @@ export const AuthPage: React.FC = () => {
             <button
               type="button"
               onClick={() => {
-                setIsRegister(false);
+                setParams({}, { replace: true });
                 clearError();
               }}
               className={`flex-1 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
@@ -66,7 +67,7 @@ export const AuthPage: React.FC = () => {
             <button
               type="button"
               onClick={() => {
-                setIsRegister(true);
+                setParams({ mode: 'register' }, { replace: true });
                 clearError();
               }}
               className={`flex-1 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${

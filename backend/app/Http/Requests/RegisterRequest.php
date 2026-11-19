@@ -6,6 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $email = $this->input('email');
+        if (is_string($email)) {
+            $this->merge(['email' => mb_strtolower(trim($email))]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -16,7 +24,7 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:12', 'confirmed'],
         ];
     }
 
@@ -28,7 +36,7 @@ class RegisterRequest extends FormRequest
             'email.email' => 'Informe um endereço de e-mail válido.',
             'email.unique' => 'Este e-mail já está cadastrado no sistema.',
             'password.required' => 'A senha é obrigatória.',
-            'password.min' => 'A senha deve conter no mínimo 8 caracteres.',
+            'password.min' => 'A senha deve conter no mínimo 12 caracteres.',
             'password.confirmed' => 'A confirmação de senha não confere.',
         ];
     }

@@ -17,6 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     if (pathname.startsWith('/recipes')) return 'Receitas & Fichas';
     if (pathname.startsWith('/ingredients')) return 'Despensa de Insumos';
     if (pathname.startsWith('/settings')) return 'Custos & Margens';
+    if (pathname.startsWith('/account')) return 'Minha conta';
     if (pathname.startsWith('/vibe')) return 'Assistente de Custos';
     return 'Painel de Produção';
   };

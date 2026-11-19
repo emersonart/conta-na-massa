@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AiChatController;
 use App\Http\Controllers\Api\AiProfileController;
 use App\Http\Controllers\Api\AiUsageController;
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CostSettingsController;
 use App\Http\Controllers\Api\DashboardController;
@@ -27,6 +28,9 @@ Route::get('/health', function () {
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
+    Route::post('/email-change/confirm', [AccountController::class, 'confirmEmailChange'])->middleware('throttle:10,1');
 });
 
 // Protected Endpoints (Requires Sanctum Bearer Token / Session)
@@ -34,6 +38,8 @@ Route::middleware(['auth:sanctum', 'sentry.user'])->group(function () {
     // Current User Profile & Logout
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::put('/auth/profile', [AccountController::class, 'updateProfile'])->middleware('throttle:10,1');
+    Route::put('/auth/password', [AccountController::class, 'updatePassword'])->middleware('throttle:5,1');
 
     // Dashboard Summary
     Route::get('/dashboard/summary', [DashboardController::class, 'summary']);

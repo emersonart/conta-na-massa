@@ -5,8 +5,10 @@ import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
 import { Logo } from '../components/ui/Logo';
 import { AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const AuthPage: React.FC = () => {
+  const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -110,10 +112,12 @@ export const AuthPage: React.FC = () => {
             <Input
               label="Sua Senha"
               type="password"
-              placeholder="Mínimo 8 caracteres"
+              placeholder="Mínimo 12 caracteres"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={isRegister ? 12 : undefined}
+              helperText={isRegister ? 'Use pelo menos 12 caracteres.' : undefined}
               autoComplete={isRegister ? 'new-password' : 'current-password'}
             />
 
@@ -125,6 +129,7 @@ export const AuthPage: React.FC = () => {
                 value={passwordConfirmation}
                 onChange={(e) => setPasswordConfirmation(e.target.value)}
                 required
+                minLength={12}
                 autoComplete="new-password"
               />
             )}
@@ -141,6 +146,18 @@ export const AuthPage: React.FC = () => {
               </Button>
             </div>
           </form>
+
+          {!isRegister && (
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                className="text-sm font-medium text-[#2D6A4F] hover:text-[#1B4332] underline underline-offset-2 cursor-pointer"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+          )}
         </Card>
       </div>
     </div>

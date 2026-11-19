@@ -33,6 +33,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'email_change_token_hash',
+        'email_change_expires_at',
     ];
 
     /**
@@ -45,6 +47,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'email_change_expires_at' => 'datetime',
         ];
     }
 

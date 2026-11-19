@@ -11,10 +11,13 @@ import { RecipesPage } from './pages/RecipesPage';
 import { RecipeDetailPage } from './pages/RecipeDetailPage';
 import { CostSettingsPage } from './pages/CostSettingsPage';
 import { VibeChatPage } from './pages/VibeChatPage';
+import { AccountPage } from './pages/AccountPage';
+import { PasswordRecoveryPage } from './pages/PasswordRecoveryPage';
+import { ConfirmEmailChangePage } from './pages/ConfirmEmailChangePage';
 import { setTelemetryUser } from './observability';
 
 function AppContent() {
-  const { checkAuth, logout, user, token, isCheckingAuth } = useAuthStore();
+  const { checkAuth, clearSession, user, token, isCheckingAuth } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -24,7 +27,7 @@ function AppContent() {
     
     // Listen for global unauthorized events to prevent zombie states
     const handleUnauthorized = () => {
-      logout();
+      clearSession();
       navigate('/login', { replace: true });
     };
 
@@ -32,7 +35,7 @@ function AppContent() {
     return () => {
       window.removeEventListener('auth:unauthorized', handleUnauthorized);
     };
-  }, [checkAuth, logout, navigate]);
+  }, [checkAuth, clearSession, navigate]);
 
   useEffect(() => {
     // Use an opaque account ID only; never send name, e-mail, or auth token.
@@ -60,12 +63,18 @@ function AppContent() {
     return <Navigate to="/login" replace />;
   }
 
-  const isAuthPage = location.pathname === '/login';
+  const isAuthPage = ['/login', '/forgot-password', '/reset-password', '/confirm-email-change'].includes(location.pathname);
 
   if (isAuthPage) {
     return (
       <main className="min-h-screen bg-[#F8F6F0]">
-        <AuthPage />
+        {location.pathname === '/login' ? (
+          <AuthPage />
+        ) : location.pathname === '/confirm-email-change' ? (
+          <ConfirmEmailChangePage />
+        ) : (
+          <PasswordRecoveryPage />
+        )}
       </main>
     );
   }
@@ -87,6 +96,7 @@ function AppContent() {
             <Route path="/recipes/:id" element={<ProtectedRoute><RecipeDetailPage /></ProtectedRoute>} />
             <Route path="/ingredients" element={<ProtectedRoute><IngredientsPage /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><CostSettingsPage /></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
             <Route path="/vibe" element={<ProtectedRoute><VibeChatPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>

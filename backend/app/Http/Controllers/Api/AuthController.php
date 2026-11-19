@@ -11,7 +11,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -44,6 +47,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'pending_email' => $user->pending_email,
             ],
             'token' => $token,
         ], 201);
@@ -56,7 +60,7 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
-        $user = User::where('email', $validated['email'])->first();
+        $user = User::query()->whereRaw('LOWER(email) = ?', [mb_strtolower(trim($validated['email']))])->first();
 
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
@@ -72,8 +76,68 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'pending_email' => $user->pending_email,
             ],
             'token' => $token,
+        ]);
+    }
+
+    /** Send a password reset link without revealing whether an account exists. */
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        if (app()->environment('production') && config('mail.default') === 'log') {
+            return response()->json([
+                'message' => 'A recuperação por e-mail está temporariamente indisponível. Tente novamente mais tarde.',
+            ], 503);
+        }
+
+        $validated = $request->validate([
+            'email' => ['required', 'email:rfc', 'max:255'],
+        ]);
+
+        try {
+            Password::sendResetLink(['email' => $this->canonicalEmailForPasswordBroker($validated['email'])]);
+        } catch (Throwable $exception) {
+            // Keep the response indistinguishable for known and unknown accounts.
+            report($exception);
+        }
+
+        return response()->json([
+            'message' => 'Se houver uma conta com esse e-mail, enviaremos instruções para redefinir a senha.',
+        ]);
+    }
+
+    /** Reset a password using Laravel's one-time, expiring password broker token. */
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email:rfc', 'max:255'],
+            'password' => ['required', 'string', 'min:12', 'confirmed'],
+        ]);
+        $validated['email'] = $this->canonicalEmailForPasswordBroker($validated['email']);
+
+        $status = Password::reset(
+            $validated,
+            function (User $user, string $password): void {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                // A forgotten password should invalidate every existing device session.
+                $user->tokens()->delete();
+            }
+        );
+
+        if ($status !== Password::PasswordReset) {
+            return response()->json([
+                'message' => 'Este link é inválido, expirou ou já foi usado. Solicite uma nova redefinição.',
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Senha redefinida. Entre com sua nova senha.',
         ]);
     }
 
@@ -89,6 +153,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'pending_email' => $user->pending_email,
             ],
             'cost_setting' => $user->costSetting,
         ]);
@@ -104,5 +169,14 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Sessão finalizada com sucesso.',
         ]);
+    }
+
+    private function canonicalEmailForPasswordBroker(string $email): string
+    {
+        $normalizedEmail = mb_strtolower(trim($email));
+
+        return User::query()
+            ->whereRaw('LOWER(email) = ?', [$normalizedEmail])
+            ->value('email') ?? $normalizedEmail;
     }
 }

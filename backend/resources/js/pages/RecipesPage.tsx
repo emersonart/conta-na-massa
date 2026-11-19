@@ -187,13 +187,13 @@ export const RecipesPage: React.FC = () => {
       {/* Top Filter & Action Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+          <Search className="w-4 h-4 text-[#495057] absolute left-3.5 top-3 pointer-events-none" />
           <input
             type="text"
             placeholder="Buscar receita pelo nome..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-10 rounded-xl border border-[#E5DDD0] bg-white pl-9 pr-3 text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-1 focus:ring-[#E85D04]/20 shadow-2xs"
+            className="w-full h-10 rounded-xl border border-[#E5DDD0] bg-white pl-9 pr-3 text-sm text-[#212529] placeholder:text-[#495057] focus:border-[#E85D04] focus:outline-none focus:ring-1 focus:ring-[#E85D04]/20 shadow-2xs"
           />
         </div>
 
@@ -209,7 +209,7 @@ export const RecipesPage: React.FC = () => {
       </div>
 
       {/* Main Table Surface (Zero cards inside cards) */}
-      <div className="bg-white rounded-2xl border border-[#E5DDD0] shadow-soft overflow-hidden">
+      <div className="bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
         {recipes.length === 0 ? (
           <div className="text-center py-16 px-4 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-orange-50 text-[#E85D04] flex items-center justify-center mx-auto">
@@ -219,7 +219,7 @@ export const RecipesPage: React.FC = () => {
               <h3 className="font-bold text-[#212529] font-heading">
                 {searchTerm ? 'Nenhuma receita encontrada' : 'Nenhuma receita cadastrada'}
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-[#495057] mt-1">
                 {searchTerm
                   ? `Nenhum resultado para "${searchTerm}".`
                   : 'Cadastre sua primeira receita para apurar custos e margens de venda.'}
@@ -239,7 +239,7 @@ export const RecipesPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-[#495057] text-xs font-semibold">
                   <th className="py-3.5 px-5">Receita</th>
                   <th className="py-3.5 px-4">Rendimento & Tempo</th>
                   <th className="py-3.5 px-4 text-right">Custo de Produção</th>
@@ -269,24 +269,24 @@ export const RecipesPage: React.FC = () => {
                           {recipe.name}
                         </span>
                         {recipe.description && (
-                          <span className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                          <span className="text-xs text-[#495057] line-clamp-1 mt-0.5">
                             {recipe.description}
                           </span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-600 text-xs">
+                      <td className="py-3.5 px-4 text-[#495057] text-xs">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-slate-800">
+                          <span className="font-medium text-[#212529]">
                             {recipe.yield_quantity} {recipe.yield_unit}
                           </span>
                           <span>•</span>
-                          <span className="flex items-center gap-1 text-slate-500">
+                          <span className="flex items-center gap-1 text-[#495057]">
                             <Clock className="w-3.5 h-3.5" />
                             {recipe.prep_time_minutes} min
                           </span>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 text-right tabular-nums text-slate-700 font-medium">
+                      <td className="py-3.5 px-4 text-right tabular-nums text-[#343A40] font-medium">
                         R$ {costPrice.toFixed(2)}
                       </td>
                       <td className="py-3.5 px-4 text-right tabular-nums">
@@ -294,7 +294,7 @@ export const RecipesPage: React.FC = () => {
                           R$ {sellingPrice.toFixed(2)}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-right tabular-nums text-slate-600 font-medium text-xs">
+                      <td className="py-3.5 px-4 text-right tabular-nums text-[#495057] font-medium text-xs">
                         R$ {portionPrice.toFixed(2)} /{recipe.yield_unit.replace(/s$/, '')}
                       </td>
                       <td className="py-3.5 px-4 text-center">
@@ -307,14 +307,14 @@ export const RecipesPage: React.FC = () => {
                           <button
                             onClick={(e) => handleOpenEdit(recipe, e)}
                             title="Editar receita"
-                            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-[#495057] hover:text-[#212529] hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={(e) => handleDelete(recipe.id, recipe.name, e)}
                             title="Excluir receita"
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-[#495057] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -455,7 +455,7 @@ export const RecipesPage: React.FC = () => {
                           onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
                           className="w-full min-h-[40px] rounded-lg border border-[#E5DDD0] bg-white px-2.5 py-1 pr-8 text-xs sm:text-sm text-[#212529] focus:border-[#E85D04] focus:outline-none tabular-nums"
                         />
-                        <span className="absolute right-2.5 top-2.5 text-xs text-slate-400 select-none">
+                        <span className="absolute right-2.5 top-2.5 text-xs text-[#495057] select-none">
                           {itemUnit}
                         </span>
                       </div>
@@ -468,7 +468,7 @@ export const RecipesPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleRemoveItem(index)}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 text-[#495057] hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -482,19 +482,19 @@ export const RecipesPage: React.FC = () => {
 
           {/* Real-time Calculation Summary in Modal */}
           <div className="p-3.5 rounded-xl bg-orange-50/70 border border-orange-200/80 space-y-2">
-            <div className="flex items-center justify-between text-xs font-medium text-slate-700">
+            <div className="flex items-center justify-between text-xs font-medium text-[#343A40]">
               <span>Insumos: R$ {previewIngredientsCost.toFixed(2)}</span>
               <span>Mão de Obra ({prepTimeMinutes}m): R$ {previewLaborCost.toFixed(2)}</span>
             </div>
             <div className="flex items-center justify-between pt-1 border-t border-orange-200/50">
               <div>
-                <span className="text-[11px] text-slate-500 block">Custo Total ({settings.overhead_pct}% overhead)</span>
-                <span className="text-sm font-bold text-slate-800 tabular-nums">
+                <span className="text-[11px] text-[#495057] block">Custo Total ({settings.overhead_pct}% overhead)</span>
+                <span className="text-sm font-bold text-[#212529] tabular-nums">
                   R$ {previewTotalCost.toFixed(2)}
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[11px] text-slate-500 block">Preço Sugerido (+{settings.profit_margin_pct}% lucro)</span>
+                <span className="text-[11px] text-[#495057] block">Preço Sugerido (+{settings.profit_margin_pct}% lucro)</span>
                 <span className="text-lg font-black text-[#E85D04] tabular-nums font-heading">
                   R$ {previewSellingPrice.toFixed(2)}
                 </span>

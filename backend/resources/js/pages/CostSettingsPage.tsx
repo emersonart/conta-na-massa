@@ -78,7 +78,7 @@ export const CostSettingsPage: React.FC = () => {
         <h2 className="text-2xl font-extrabold font-heading text-[#212529] tracking-tight flex items-center gap-2">
           <Sliders className="w-6 h-6 text-[#E85D04]" /> Parâmetros Financeiros & Margens
         </h2>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+        <p className="text-xs sm:text-sm text-[#495057] mt-1">
           Defina as taxas que são aplicadas automaticamente em todas as suas receitas e fichas técnicas.
         </p>
       </div>
@@ -159,29 +159,29 @@ export const CostSettingsPage: React.FC = () => {
         {/* Live Simulator Preview */}
         <div className="space-y-4">
           <Card className="bg-[#FDFBF7] border border-[#E5DDD0] p-5 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E85D04] font-heading">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#E85D04] font-heading">
               <Calculator className="w-4 h-4" /> Simulador em Tempo Real
             </div>
 
-            <p className="text-xs text-slate-600">
-              Exemplo de um bolo com <strong className="text-slate-800">R$ 25,00 em ingredientes</strong> e{' '}
-              <strong className="text-slate-800">1 hora de preparo</strong>:
+            <p className="text-xs text-[#495057]">
+              Exemplo de um bolo com <strong className="text-[#212529]">R$ 25,00 em ingredientes</strong> e{' '}
+              <strong className="text-[#212529]">1 hora de preparo</strong>:
             </p>
 
-            <div className="space-y-2.5 text-xs text-slate-600 divide-y divide-[#E5DDD0]">
+            <div className="space-y-2.5 text-xs text-[#495057] divide-y divide-[#E5DDD0]">
               <div className="flex justify-between pt-1">
                 <span>Ingredientes:</span>
-                <span className="font-semibold text-slate-800 tabular-nums">R$ 25,00</span>
+                <span className="font-semibold text-[#212529] tabular-nums">R$ 25,00</span>
               </div>
               <div className="flex justify-between pt-1">
                 <span>Mão de Obra (1h):</span>
-                <span className="font-semibold text-slate-800 tabular-nums">R$ {simLabor.toFixed(2)}</span>
+                <span className="font-semibold text-[#212529] tabular-nums">R$ {simLabor.toFixed(2)}</span>
               </div>
               <div className="flex justify-between pt-1">
                 <span>Overhead ({overheadPct}%):</span>
-                <span className="font-semibold text-slate-800 tabular-nums">R$ {simOverheadVal.toFixed(2)}</span>
+                <span className="font-semibold text-[#212529] tabular-nums">R$ {simOverheadVal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between pt-1 font-bold text-slate-800">
+              <div className="flex justify-between pt-1 font-bold text-[#212529]">
                 <span>Custo Real de Produção:</span>
                 <span className="tabular-nums">R$ {simTotalCost.toFixed(2)}</span>
               </div>
@@ -192,7 +192,7 @@ export const CostSettingsPage: React.FC = () => {
             </div>
 
             <div className="p-3.5 rounded-xl bg-orange-50 border border-orange-200 text-center">
-              <span className="text-[10px] uppercase font-bold text-[#E85D04] tracking-wider block">
+              <span className="text-[10px] font-bold text-[#E85D04] block">
                 Preço de Venda Resultante
               </span>
               <p className="text-2xl font-black text-[#E85D04] tabular-nums font-heading mt-0.5">
@@ -201,8 +201,8 @@ export const CostSettingsPage: React.FC = () => {
             </div>
           </Card>
 
-          <Card className="p-4 bg-white border border-[#E5DDD0] text-xs text-slate-500 space-y-2">
-            <span className="font-bold text-slate-700 flex items-center gap-1.5">
+          <Card className="p-4 bg-white border border-[#E5DDD0] text-xs text-[#495057] space-y-2">
+            <span className="font-bold text-[#343A40] flex items-center gap-1.5">
               <Info className="w-3.5 h-3.5 text-[#2D6A4F]" /> Dica de Gestão
             </span>
             <p>

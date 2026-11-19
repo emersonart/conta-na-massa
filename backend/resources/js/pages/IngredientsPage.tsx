@@ -115,13 +115,13 @@ export const IngredientsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-1 max-w-lg">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+            <Search className="w-4 h-4 text-[#495057] absolute left-3.5 top-3 pointer-events-none" />
             <input
               type="text"
               placeholder="Filtrar por nome ou marca..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 rounded-xl border border-[#E5DDD0] bg-white pl-9 pr-3 text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-1 focus:ring-[#E85D04]/20 shadow-2xs"
+              className="w-full h-10 rounded-xl border border-[#E5DDD0] bg-white pl-9 pr-3 text-sm text-[#212529] placeholder:text-[#495057] focus:border-[#E85D04] focus:outline-none focus:ring-1 focus:ring-[#E85D04]/20 shadow-2xs"
             />
           </div>
 
@@ -139,7 +139,7 @@ export const IngredientsPage: React.FC = () => {
                 className={`px-2.5 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
                   selectedUnit === tab.id
                     ? 'bg-white text-[#212529] shadow-2xs font-semibold'
-                    : 'text-slate-600 hover:text-slate-900'
+                    : 'text-[#495057] hover:text-[#212529]'
                 }`}
               >
                 {tab.label}
@@ -160,7 +160,7 @@ export const IngredientsPage: React.FC = () => {
       </div>
 
       {/* Main Table Surface (Zero cards inside cards) */}
-      <div className="bg-white rounded-2xl border border-[#E5DDD0] shadow-soft overflow-hidden">
+      <div className="bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
         {filteredIngredients.length === 0 ? (
           <div className="text-center py-16 px-4 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center mx-auto">
@@ -170,7 +170,7 @@ export const IngredientsPage: React.FC = () => {
               <h3 className="font-bold text-[#212529] font-heading">
                 {searchTerm ? 'Nenhum insumo encontrado' : 'Despensa vazia'}
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-[#495057] mt-1">
                 {searchTerm
                   ? `Nenhum resultado para a busca "${searchTerm}".`
                   : 'Cadastre seus insumos básicos para começar a estruturar suas receitas.'}
@@ -192,7 +192,7 @@ export const IngredientsPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-[#495057] text-xs font-semibold">
                   <th className="py-3.5 px-5">Insumo</th>
                   <th className="py-3.5 px-4 text-center">Unidade</th>
                   <th className="py-3.5 px-4 text-right">Embalagem Comprada</th>
@@ -230,9 +230,9 @@ export const IngredientsPage: React.FC = () => {
                           {ing.unit}
                         </Badge>
                       </td>
-                      <td className="py-3.5 px-4 text-right font-medium text-slate-600 tabular-nums">
+                      <td className="py-3.5 px-4 text-right font-medium text-[#495057] tabular-nums">
                         <span>{displayPkg} por </span>
-                        <strong className="text-slate-800">
+                        <strong className="text-[#212529]">
                           R$ {ing.package_cost_brl.toFixed(2)}
                         </strong>
                       </td>
@@ -242,12 +242,12 @@ export const IngredientsPage: React.FC = () => {
                           {ing.cost_per_unit_brl < 0.01
                             ? ing.cost_per_unit_brl.toFixed(4)
                             : ing.cost_per_unit_brl.toFixed(2)}{' '}
-                          <span className="text-[11px] font-medium text-slate-500">
+                          <span className="text-[11px] font-medium text-[#495057]">
                             / {unitLabel}
                           </span>
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-xs text-slate-500 hidden md:table-cell truncate max-w-[200px]">
+                      <td className="py-3.5 px-4 text-xs text-[#495057] hidden md:table-cell truncate max-w-[200px]">
                         {ing.notes || '—'}
                       </td>
                       <td className="py-3.5 px-5 text-right">
@@ -255,14 +255,14 @@ export const IngredientsPage: React.FC = () => {
                           <button
                             onClick={() => handleOpenEdit(ing)}
                             title="Editar insumo"
-                            className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-[#495057] hover:text-[#212529] hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(ing.id, ing.name)}
                             title="Excluir insumo"
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-[#495057] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

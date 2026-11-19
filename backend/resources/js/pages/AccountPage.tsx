@@ -90,13 +90,13 @@ export const AccountPage: React.FC = () => {
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h2 className="text-xl font-bold font-heading text-[#212529]">Minha conta</h2>
-        <p className="mt-1 text-sm text-slate-600">Gerencie seus dados cadastrais e proteja seu acesso.</p>
+        <p className="mt-1 text-sm text-[#495057]">Gerencie seus dados cadastrais e proteja seu acesso.</p>
       </div>
 
       <Card>
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#E85D04] flex items-center justify-center"><Mail className="w-5 h-5" /></div>
-          <div><h3 className="font-semibold text-[#212529]">Dados cadastrais</h3><p className="text-xs text-slate-500">Alterar a senha atual é exigido para salvar.</p></div>
+          <div><h3 className="font-semibold text-[#212529]">Dados cadastrais</h3><p className="text-xs text-[#495057]">Informe sua senha atual para salvar as alterações.</p></div>
         </div>
         {profileMessage && <div role="status" className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex gap-2"><CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />{profileMessage}</div>}
         {profileError && <div role="alert" className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex gap-2"><AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />{profileError}</div>}
@@ -112,7 +112,7 @@ export const AccountPage: React.FC = () => {
       <Card>
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#2D6A4F] flex items-center justify-center"><ShieldCheck className="w-5 h-5" /></div>
-          <div><h3 className="font-semibold text-[#212529]">Alterar senha</h3><p className="text-xs text-slate-500">As outras sessões serão encerradas ao salvar.</p></div>
+          <div><h3 className="font-semibold text-[#212529]">Alterar senha</h3><p className="text-xs text-[#495057]">As outras sessões serão encerradas ao salvar.</p></div>
         </div>
         {passwordMessage && <div role="status" className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex gap-2"><CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />{passwordMessage}</div>}
         {passwordError && <div role="alert" className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex gap-2"><AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />{passwordError}</div>}

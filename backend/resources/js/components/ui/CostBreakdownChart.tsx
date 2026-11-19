@@ -52,18 +52,18 @@ export const CostBreakdownChart: React.FC<CostBreakdownProps> = ({ financials, c
   }
 
   return (
-    <div className="w-full bg-[#FDFBF7] border border-[#E5DDD0] rounded-2xl p-4 sm:p-5 space-y-4">
-      <div className="flex items-center justify-between">
-        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600 font-heading">
+    <div className="w-full bg-[#FDFBF7] border border-[#E5DDD0] rounded-2xl p-4 sm:p-5 space-y-4 shadow-warm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#343A40] font-heading">
           Composição do Preço de Venda
         </h4>
-        <span className="text-xs font-semibold px-2 py-0.5 bg-[#D8F3DC] text-[#2D6A4F] rounded-md tabular-nums">
+        <span className="text-xs font-semibold px-2.5 py-1 bg-[#D8F3DC]/80 text-[#1B4332] border border-[#74C69D]/30 rounded-lg tabular-nums self-start sm:self-auto">
           Preço Sugerido: R$ {financials.suggested_selling_price_brl.toFixed(2)}
         </span>
       </div>
 
       {/* Multi-segment Progress Bar */}
-      <div className="flex h-4 w-full overflow-hidden rounded-full bg-slate-200/80 p-0.5 shadow-inner">
+      <div className="flex h-3.5 w-full overflow-hidden rounded-full bg-slate-200/80 p-0.5 shadow-inner">
         <div
           style={{ width: `${ingredientsPct}%` }}
           className="h-full bg-[#E85D04] rounded-l-full transition-all duration-500"
@@ -84,44 +84,44 @@ export const CostBreakdownChart: React.FC<CostBreakdownProps> = ({ financials, c
 
       {/* Legend & Values Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs sm:text-sm">
-        <div className="p-2.5 rounded-xl bg-orange-50/80 border border-orange-100 flex flex-col">
+        <div className="p-3 rounded-xl bg-[#FFF4ED] border border-[#FFE5D4] flex flex-col">
           <span className="flex items-center gap-1.5 text-xs text-orange-950 font-medium">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#E85D04]" /> Ingredientes
+            <span className="w-2.5 h-2.5 rounded-full bg-[#E85D04]" /> Insumos
           </span>
-          <span className="text-base font-bold text-[#E85D04] mt-1 tabular-nums">
+          <span className="text-base font-bold text-[#E85D04] mt-1 tabular-nums font-heading">
             R$ {financials.ingredients_cost_brl.toFixed(2)}
           </span>
-          <span className="text-[11px] text-slate-500 tabular-nums">{ingredientsPct.toFixed(1)}% do preço</span>
+          <span className="text-[11px] text-[#495057] tabular-nums mt-0.5">{ingredientsPct.toFixed(1)}% do preço</span>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-amber-50/80 border border-amber-100 flex flex-col">
+        <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/70 flex flex-col">
           <span className="flex items-center gap-1.5 text-xs text-amber-950 font-medium">
             <span className="w-2.5 h-2.5 rounded-full bg-[#F4A261]" /> Mão de Obra
           </span>
-          <span className="text-base font-bold text-[#343A40] mt-1 tabular-nums">
+          <span className="text-base font-bold text-[#343A40] mt-1 tabular-nums font-heading">
             R$ {financials.labor_cost_brl.toFixed(2)}
           </span>
-          <span className="text-[11px] text-slate-500 tabular-nums">{laborPct.toFixed(1)}% do preço</span>
+          <span className="text-[11px] text-[#495057] tabular-nums mt-0.5">{laborPct.toFixed(1)}% do preço</span>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col">
+        <div className="p-3 rounded-xl bg-[#F0EAE1]/70 border border-[#E5DDD0] flex flex-col">
           <span className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
             <span className="w-2.5 h-2.5 rounded-full bg-slate-400" /> Custos Fixos
           </span>
-          <span className="text-base font-bold text-slate-700 mt-1 tabular-nums">
+          <span className="text-base font-bold text-[#343A40] mt-1 tabular-nums font-heading">
             R$ {financials.overhead_value_brl.toFixed(2)}
           </span>
-          <span className="text-[11px] text-slate-500 tabular-nums">{overheadPct.toFixed(1)}% do preço</span>
+          <span className="text-[11px] text-[#495057] tabular-nums mt-0.5">{overheadPct.toFixed(1)}% do preço</span>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-emerald-50/90 border border-emerald-200/80 flex flex-col">
+        <div className="p-3 rounded-xl bg-[#D8F3DC]/70 border border-[#74C69D]/40 flex flex-col">
           <span className="flex items-center gap-1.5 text-xs text-emerald-950 font-medium">
             <span className="w-2.5 h-2.5 rounded-full bg-[#2D6A4F]" /> Lucro Líquido
           </span>
-          <span className="text-base font-bold text-[#2D6A4F] mt-1 tabular-nums">
+          <span className="text-base font-bold text-[#1B4332] mt-1 tabular-nums font-heading">
             + R$ {financials.profit_value_brl.toFixed(2)}
           </span>
-          <span className="text-[11px] font-semibold text-emerald-700 tabular-nums">
+          <span className="text-[11px] font-semibold text-[#2D6A4F] tabular-nums mt-0.5">
             +{financials.profit_margin_pct.toFixed(0)}% de margem
           </span>
         </div>

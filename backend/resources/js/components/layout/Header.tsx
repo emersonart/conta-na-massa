@@ -25,18 +25,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const title = getPageTitle(location.pathname);
 
   return (
-    <header className="sticky top-0 z-30 bg-[#F8F6F0]/90 backdrop-blur-sm border-b border-[#E5DDD0]/70 lg:bg-transparent lg:border-0 lg:static">
-      <div className="px-4 sm:px-6 lg:px-8 py-3 lg:py-4 flex items-center justify-between gap-4">
-        {/* Mobile Left: Menu Toggle + Logo */}
-        <div className="flex items-center gap-3 lg:hidden">
+    <header className="sticky top-0 z-30 bg-[#F8F6F0]/90 backdrop-blur-md border-b border-[#E5DDD0]/70 lg:bg-[#F8F6F0]/60 lg:backdrop-blur-xs">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 lg:py-4 flex items-center justify-between gap-4">
+        {/* Mobile Left: Menu Toggle + Logo + Title */}
+        <div className="flex items-center gap-3 lg:hidden min-w-0">
           <button
             onClick={onOpenMobileMenu}
-            className="p-2 -ml-1 text-slate-600 hover:text-slate-900 rounded-xl border border-[#E5DDD0] bg-white shadow-2xs"
+            className="p-2 -ml-1 text-[#343A40] hover:text-[#212529] rounded-xl border border-[#E5DDD0] bg-white shadow-2xs cursor-pointer active:scale-95 transition-all"
             aria-label="Abrir menu lateral"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div onClick={() => navigate('/dashboard')} className="cursor-pointer">
+          <div onClick={() => navigate('/dashboard')} className="cursor-pointer shrink-0">
             <Logo size="sm" showText={false} />
           </div>
           <span className="font-bold font-heading text-sm text-[#212529] truncate">
@@ -45,20 +45,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         </div>
 
         {/* Desktop Left: Clean Title / Breadcrumb */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex items-center gap-3">
           <h1 className="text-xl font-bold font-heading text-[#212529] tracking-tight">
             {title}
           </h1>
+          <span className="text-xs text-slate-400 font-medium">
+            • Conta na Massa
+          </span>
         </div>
 
         {/* Desktop Right Quick Actions */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-2.5">
           <Button
             variant="outline"
             size="sm"
             onClick={() => navigate('/ingredients')}
           >
-            Ver Insumos
+            Despensa de Insumos
           </Button>
           <Button
             variant="primary"

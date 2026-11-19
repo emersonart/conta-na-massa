@@ -41,7 +41,7 @@ export const Input: React.FC<InputProps> = ({
           id={inputId}
           className={twMerge(
             clsx(
-              'w-full min-h-[46px] rounded-xl border-2 border-[#E5DDD0] bg-white px-3.5 py-2.5 text-base sm:text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-2 focus:ring-[#E85D04]/15 transition-colors disabled:bg-slate-100 disabled:cursor-not-allowed tabular-nums',
+              'w-full min-h-[44px] rounded-xl border border-[#E5DDD0] bg-white px-3.5 py-2.5 text-base sm:text-sm text-[#212529] placeholder:text-slate-400 focus:border-[#E85D04] focus:outline-none focus:ring-3 focus:ring-[#E85D04]/15 transition-all shadow-2xs disabled:bg-slate-100 disabled:cursor-not-allowed tabular-nums',
               prefixText && 'pl-10',
               suffixText && 'pr-12',
               error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20',

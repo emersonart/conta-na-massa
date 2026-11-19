@@ -183,9 +183,31 @@ export const RecipesPage: React.FC = () => {
   const previewSellingPrice = previewTotalCost * (1 + settings.profit_margin_pct / 100);
 
   return (
-    <div className="space-y-5 animate-fadeIn">
-      {/* Top Filter & Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="space-y-6 animate-fadeIn">
+      {/* Header & Actions Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-extrabold font-heading text-[#212529] tracking-tight flex items-center gap-2">
+            <BookOpen className="w-6 h-6 text-[#E85D04]" /> Receitas & Fichas Técnicas
+          </h2>
+          <p className="text-xs sm:text-sm text-[#495057] mt-1">
+            Fichas de custo apuradas por insumos, tempo de forno/mão de obra e margem de lucro.
+          </p>
+        </div>
+
+        <Button
+          variant="primary"
+          size="md"
+          onClick={handleOpenCreate}
+          leftIcon={<Plus className="w-4 h-4" />}
+          className="shrink-0 self-start sm:self-auto"
+        >
+          Nova Receita
+        </Button>
+      </div>
+
+      {/* Filter and Search Bar */}
+      <div className="bg-[#FDFBF7] p-3 sm:p-4 rounded-2xl border border-[#E5DDD0] shadow-warm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-[#495057] absolute left-3.5 top-3 pointer-events-none" />
           <input
@@ -193,145 +215,245 @@ export const RecipesPage: React.FC = () => {
             placeholder="Buscar receita pelo nome..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-10 rounded-xl border border-[#E5DDD0] bg-white pl-9 pr-3 text-sm text-[#212529] placeholder:text-[#495057] focus:border-[#E85D04] focus:outline-none focus:ring-1 focus:ring-[#E85D04]/20 shadow-2xs"
+            className="w-full h-10 rounded-xl border border-[#E5DDD0] bg-white pl-9 pr-8 text-sm text-[#212529] placeholder:text-[#495057] focus:border-[#E85D04] focus:outline-none focus:ring-2 focus:ring-[#E85D04]/20 shadow-2xs"
           />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 p-0.5 rounded cursor-pointer"
+              title="Limpar busca"
+            >
+              ×
+            </button>
+          )}
         </div>
 
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={handleOpenCreate}
-          leftIcon={<Plus className="w-4 h-4" />}
-          className="shrink-0"
-        >
-          Nova Receita
-        </Button>
+        <div className="text-xs text-[#495057] font-medium self-end sm:self-auto">
+          {recipes.length} {recipes.length === 1 ? 'receita cadastrada' : 'receitas cadastradas'}
+        </div>
       </div>
 
-      {/* Main Table Surface (Zero cards inside cards) */}
-      <div className="bg-[#FDFBF7] rounded-xl border border-[#E5DDD0] overflow-hidden">
+      {/* Main Table Surface */}
+      <div className="bg-[#FDFBF7] rounded-2xl border border-[#E5DDD0] overflow-hidden shadow-warm">
         {recipes.length === 0 ? (
           <div className="text-center py-16 px-4 space-y-3">
-            <div className="w-12 h-12 rounded-xl bg-orange-50 text-[#E85D04] flex items-center justify-center mx-auto">
-              <BookOpen className="w-6 h-6" />
+            <div className="w-14 h-14 rounded-2xl bg-[#FFF4ED] text-[#E85D04] flex items-center justify-center mx-auto shadow-2xs">
+              <BookOpen className="w-7 h-7" />
             </div>
             <div className="max-w-sm mx-auto">
-              <h3 className="font-bold text-[#212529] font-heading">
+              <h3 className="font-bold text-base text-[#212529] font-heading">
                 {searchTerm ? 'Nenhuma receita encontrada' : 'Nenhuma receita cadastrada'}
               </h3>
-              <p className="text-xs text-[#495057] mt-1">
+              <p className="text-xs text-[#495057] mt-1.5 leading-relaxed">
                 {searchTerm
-                  ? `Nenhum resultado para "${searchTerm}".`
-                  : 'Cadastre sua primeira receita para apurar custos e margens de venda.'}
+                  ? `Nenhum resultado corresponde ao termo "${searchTerm}".`
+                  : 'Cadastre sua primeira receita para compor os insumos, rendimento e calcular preços de venda automáticos.'}
               </p>
             </div>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleOpenCreate}
-              leftIcon={<Plus className="w-4 h-4" />}
-              className="mt-2"
-            >
-              Criar Primeira Receita
-            </Button>
+            {!searchTerm ? (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleOpenCreate}
+                leftIcon={<Plus className="w-4 h-4" />}
+                className="mt-2"
+              >
+                Criar Primeira Receita
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSearchTerm('')}
+                className="mt-2"
+              >
+                Limpar Busca
+              </Button>
+            )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-[#E5DDD0] bg-[#FDFBF7] text-[#495057] text-xs font-semibold">
-                  <th className="py-3.5 px-5">Receita</th>
-                  <th className="py-3.5 px-4">Rendimento & Tempo</th>
-                  <th className="py-3.5 px-4 text-right">Custo de Produção</th>
-                  <th className="py-3.5 px-4 text-right">Preço Sugerido</th>
-                  <th className="py-3.5 px-4 text-right">Preço / Porção</th>
-                  <th className="py-3.5 px-4 text-center">Margem</th>
-                  <th className="py-3.5 px-5 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E5DDD0]/60">
-                {recipes.map((recipe) => {
-                  const fin = recipe.financials;
-                  const profitMargin =
-                    fin?.profit_margin_pct ?? settings.profit_margin_pct;
-                  const sellingPrice = fin?.suggested_selling_price_brl ?? 0;
-                  const costPrice = fin?.total_cost_brl ?? 0;
-                  const portionPrice = fin?.price_per_portion_brl ?? 0;
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-[#E5DDD0] bg-white text-[#495057] text-xs font-semibold font-heading">
+                    <th className="py-3.5 px-5">Receita</th>
+                    <th className="py-3.5 px-4">Rendimento & Tempo</th>
+                    <th className="py-3.5 px-4 text-right">Custo de Produção</th>
+                    <th className="py-3.5 px-4 text-right">Preço Sugerido</th>
+                    <th className="py-3.5 px-4 text-right">Preço / Porção</th>
+                    <th className="py-3.5 px-4 text-center">Margem</th>
+                    <th className="py-3.5 px-5 text-right">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E5DDD0]/60 bg-[#FDFBF7]">
+                  {recipes.map((recipe) => {
+                    const fin = recipe.financials;
+                    const profitMargin =
+                      fin?.profit_margin_pct ?? settings.profit_margin_pct;
+                    const sellingPrice = fin?.suggested_selling_price_brl ?? 0;
+                    const costPrice = fin?.total_cost_brl ?? 0;
+                    const portionPrice = fin?.price_per_portion_brl ?? 0;
 
-                  return (
-                    <tr
-                      key={recipe.id}
-                      onClick={() => navigate(`/recipes/${recipe.id}`)}
-                      className="hover:bg-[#FDFBF7]/60 transition-colors cursor-pointer group"
-                    >
-                      <td className="py-3.5 px-5">
-                        <span className="font-bold text-[#212529] group-hover:text-[#E85D04] transition-colors block">
-                          {recipe.name}
-                        </span>
-                        {recipe.description && (
-                          <span className="text-xs text-[#495057] line-clamp-1 mt-0.5">
-                            {recipe.description}
+                    return (
+                      <tr
+                        key={recipe.id}
+                        onClick={() => navigate(`/recipes/${recipe.id}`)}
+                        className="hover:bg-white transition-colors cursor-pointer group"
+                      >
+                        <td className="py-4 px-5">
+                          <span className="font-bold text-[#212529] group-hover:text-[#E85D04] transition-colors block font-heading">
+                            {recipe.name}
                           </span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 text-[#495057] text-xs">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-[#212529]">
+                          {recipe.description && (
+                            <span className="text-xs text-[#495057] line-clamp-1 mt-0.5">
+                              {recipe.description}
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-4 px-4 text-[#495057] text-xs">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-[#212529] bg-[#F0EAE1]/70 px-2 py-0.5 rounded-md">
+                              {recipe.yield_quantity} {recipe.yield_unit}
+                            </span>
+                            <span className="flex items-center gap-1 text-[#495057]">
+                              <Clock className="w-3.5 h-3.5" />
+                              {recipe.prep_time_minutes} min
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4 text-right tabular-nums text-[#343A40] font-medium">
+                          R$ {costPrice.toFixed(2)}
+                        </td>
+                        <td className="py-4 px-4 text-right tabular-nums">
+                          <span className="font-extrabold text-[#E85D04] text-base font-heading">
+                            R$ {sellingPrice.toFixed(2)}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 text-right tabular-nums text-[#495057] font-medium text-xs">
+                          R$ {portionPrice.toFixed(2)} /{recipe.yield_unit.replace(/s$/, '')}
+                        </td>
+                        <td className="py-4 px-4 text-center">
+                          <Badge variant="sage" size="sm">
+                            +{profitMargin.toFixed(0)}%
+                          </Badge>
+                        </td>
+                        <td className="py-4 px-5 text-right" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              onClick={(e) => handleOpenEdit(recipe, e)}
+                              title="Editar receita"
+                              className="p-1.5 text-[#495057] hover:text-[#212529] hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => handleDelete(recipe.id, recipe.name, e)}
+                              title="Excluir receita"
+                              className="p-1.5 text-[#495057] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <span
+                              onClick={() => navigate(`/recipes/${recipe.id}`)}
+                              className="inline-flex items-center gap-0.5 text-xs font-semibold text-[#E85D04] pl-2 hover:translate-x-0.5 transition-transform cursor-pointer"
+                            >
+                              Ver <ChevronRight className="w-3.5 h-3.5" />
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards View */}
+            <div className="md:hidden divide-y divide-[#E5DDD0]/60">
+              {recipes.map((recipe) => {
+                const fin = recipe.financials;
+                const profitMargin =
+                  fin?.profit_margin_pct ?? settings.profit_margin_pct;
+                const sellingPrice = fin?.suggested_selling_price_brl ?? 0;
+                const costPrice = fin?.total_cost_brl ?? 0;
+                const portionPrice = fin?.price_per_portion_brl ?? 0;
+
+                return (
+                  <div
+                    key={recipe.id}
+                    onClick={() => navigate(`/recipes/${recipe.id}`)}
+                    className="p-4 space-y-3 bg-[#FDFBF7] cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-[#212529] font-heading text-base leading-snug truncate">
+                          {recipe.name}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-[#495057]">
+                          <span className="font-medium bg-[#F0EAE1]/70 px-1.5 py-0.5 rounded">
                             {recipe.yield_quantity} {recipe.yield_unit}
                           </span>
                           <span>•</span>
-                          <span className="flex items-center gap-1 text-[#495057]">
-                            <Clock className="w-3.5 h-3.5" />
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
                             {recipe.prep_time_minutes} min
                           </span>
                         </div>
-                      </td>
-                      <td className="py-3.5 px-4 text-right tabular-nums text-[#343A40] font-medium">
-                        R$ {costPrice.toFixed(2)}
-                      </td>
-                      <td className="py-3.5 px-4 text-right tabular-nums">
-                        <span className="font-extrabold text-[#E85D04] text-base font-heading">
+                      </div>
+                      <Badge variant="sage" size="sm" className="shrink-0">
+                        +{profitMargin.toFixed(0)}%
+                      </Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-white p-2.5 rounded-xl border border-[#E5DDD0]">
+                        <span className="text-[11px] text-[#495057] block">Custo de Produção</span>
+                        <span className="font-semibold text-[#212529] tabular-nums mt-0.5 block text-sm">
+                          R$ {costPrice.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="bg-[#FFF4ED] p-2.5 rounded-xl border border-[#FFE5D4]">
+                        <span className="text-[11px] text-[#E85D04] font-semibold block">Preço Sugerido</span>
+                        <span className="font-extrabold text-[#E85D04] font-heading tabular-nums mt-0.5 block text-base">
                           R$ {sellingPrice.toFixed(2)}
                         </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right tabular-nums text-[#495057] font-medium text-xs">
-                        R$ {portionPrice.toFixed(2)} /{recipe.yield_unit.replace(/s$/, '')}
-                      </td>
-                      <td className="py-3.5 px-4 text-center">
-                        <Badge variant="sage" size="sm">
-                          +{profitMargin.toFixed(0)}%
-                        </Badge>
-                      </td>
-                      <td className="py-3.5 px-5 text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            onClick={(e) => handleOpenEdit(recipe, e)}
-                            title="Editar receita"
-                            className="p-1.5 text-[#495057] hover:text-[#212529] hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={(e) => handleDelete(recipe.id, recipe.name, e)}
-                            title="Excluir receita"
-                            className="p-1.5 text-[#495057] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                          <span
-                            onClick={() => navigate(`/recipes/${recipe.id}`)}
-                            className="inline-flex items-center gap-0.5 text-xs font-semibold text-[#E85D04] pl-2 hover:underline cursor-pointer"
-                          >
-                            Ver <ChevronRight className="w-3.5 h-3.5" />
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        <span className="text-[10px] text-[#495057] block tabular-nums">
+                          R$ {portionPrice.toFixed(2)} / un
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-[#E5DDD0]/40" onClick={(e) => e.stopPropagation()}>
+                      <span
+                        onClick={() => navigate(`/recipes/${recipe.id}`)}
+                        className="text-xs font-semibold text-[#E85D04] flex items-center gap-0.5 cursor-pointer"
+                      >
+                        Abrir ficha técnica <ChevronRight className="w-4 h-4" />
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={(e) => handleOpenEdit(recipe, e)}
+                          title="Editar receita"
+                          className="p-1.5 text-[#495057] hover:text-[#212529] hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => handleDelete(recipe.id, recipe.name, e)}
+                          title="Excluir receita"
+                          className="p-1.5 text-[#495057] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
 
